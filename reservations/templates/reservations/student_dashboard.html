@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .navbar {
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar h1 {
+            font-size: 24px;
+        }
+        
+        .navbar-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background: #667eea;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .navbar a:hover {
+            background: #764ba2;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        
+        .welcome {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .welcome h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .welcome p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #764ba2;
+        }
+        
+        .btn-success {
+            background: #4caf50;
+        }
+        
+        .btn-success:hover {
+            background: #45a049;
+        }
+        
+        .notification-banner {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .notification-banner strong {
+            color: #1976D2;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .notification-banner ul {
+            margin-left: 20px;
+            color: #555;
+        }
+        
+        .notification-banner li {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+        
+        .notification-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+        
+        .notification-badge.approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .notification-badge.rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: normal;
+        }
+        
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .reservations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .reservation-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border-left: 5px solid #667eea;
+        }
+        
+        .reservation-card.pending {
+            border-left-color: #ffc107;
+        }
+        
+        .reservation-card.approved {
+            border-left-color: #28a745;
+        }
+        
+        .reservation-card.rejected {
+            border-left-color: #dc3545;
+        }
+        
+        .reservation-card.cancelled {
+            border-left-color: #6c757d;
+        }
+        
+        .card-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .card-header h4 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+        
+        .card-header p {
+            color: #666;
+            font-size: 13px;
+            margin: 5px 0;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .info-label {
+            color: #666;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        .info-value {
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-badge.approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-badge.rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-badge.cancelled {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+        
+        .rejection-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #856404;
+        }
+        
+        .rejection-note strong {
+            color: #333;
+        }
+        
+        .card-footer {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .card-footer button, .card-footer a {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            flex: 1;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        
+        .btn-cancel-res {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-cancel-res:hover {
+            background: #c82333;
+        }
+        
+        .btn-view {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background: #764ba2;
+        }
+        
+        .no-reservations {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 10px;
+            color: #999;
+        }
+        
+        .no-reservations p {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Student Dashboard</h1>
+        <div class="navbar-right">
+            <span>Welcome, {{ user.username }}</span>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="welcome">
+            <h2>Welcome, {{ user.first_name|default:user.username }}</h2>
+            <p>Manage your room reservations and check their status below.</p>
+            <div class="btn-group">
+                <a href="{% url 'book_room' %}" class="btn btn-success">+ Book a Room</a>
+                <a href="{% url 'student_reservations' %}" class="btn">View All Reservations</a>
+            </div>
+        </div>
+        
+        {% if reservations %}
+            {% if notifications %}
+                <div class="notification-banner">
+                    <strong>Updates on Your Reservations:</strong>
+                    <ul>
+                        {% for notif in notifications %}
+                            <li>
+                                <strong>{{ notif.room.name }}</strong> on {{ notif.date|date:"M d, Y" }}
+                                {% if notif.status == 'approved' %}
+                                    <span class="notification-badge approved">Approved</span>
+                                {% elif notif.status == 'rejected' %}
+                                    <span class="notification-badge rejected">Rejected</span>
+                                {% endif %}
+                                {% if notif.rejection_note %}
+                                    <br><span style="font-size: 12px; color: #666;">{{ notif.rejection_note }}</span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>Pending</h3>
+                    <div class="number">{{ pending }}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Approved</h3>
+                    <div class="number">{{ approved }}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total</h3>
+                    <div class="number">{{ reservations|length }}</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Your Recent Reservations</h3>
+                <div class="reservations-grid">
+                    {% for reservation in reservations|slice:":6" %}
+                        <div class="reservation-card {{ reservation.status }}">
+                            <div class="card-header">
+                                <h4>{{ reservation.room.name }}</h4>
+                                <p><strong>{{ reservation.room.campus.name }}</strong></p>
+                                <p>{{ reservation.room.campus.location }}</p>
+                            </div>
+                            
+                            <div class="card-body">
+                                <div class="info-row">
+                                    <span class="info-label">Date:</span>
+                                    <span class="info-value">{{ reservation.date|date:"M d, Y" }}</span>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <span class="info-label">Time:</span>
+                                    <span class="info-value">{{ reservation.start_time }} - {{ reservation.end_time }}</span>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <span class="info-label">Capacity:</span>
+                                    <span class="info-value">{{ reservation.room.capacity }} people</span>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <span class="info-label">Status:</span>
+                                    <span class="status-badge {{ reservation.status }}">
+                                        {% if reservation.status == 'pending' %}
+                                            Pending
+                                        {% elif reservation.status == 'approved' %}
+                                            Approved
+                                        {% elif reservation.status == 'rejected' %}
+                                            Rejected
+                                        {% else %}
+                                            Cancelled
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                
+                                {% if reservation.status == 'pending' %}
+                                    <div class="info-row">
+                                        <span class="info-label">Status:</span>
+                                        <span class="info-value">Waiting for approval</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if reservation.rejection_note %}
+                                    <div class="rejection-note">
+                                        <strong>Rejection Reason:</strong><br>
+                                        {{ reservation.rejection_note }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            {% if reservation.status == 'pending' %}
+                                <div class="card-footer">
+                                    <form method="POST" action="{% url 'cancel_reservation' reservation.id %}" style="display: contents;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-cancel-res" onclick="return confirm('Are you sure you want to cancel this reservation?')">Cancel Booking</button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                {% if reservations|length > 6 %}
+                    <div style="text-align: center; margin-top: 20px;">
+                        <a href="{% url 'student_reservations' %}" class="btn">View All Reservations ({{ reservations|length }})</a>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="no-reservations">
+                <p style="font-size: 18px;">You haven't booked any rooms yet</p>
+                <p>Start by booking your first room below</p>
+                <a href="{% url 'book_room' %}" class="btn btn-success">Book a Room Now</a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

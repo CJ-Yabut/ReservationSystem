@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .navbar {
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar h1 {
+            font-size: 24px;
+        }
+        
+        .navbar-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .navbar a, .navbar button {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background: #667eea;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .navbar a:hover, .navbar button:hover {
+            background: #764ba2;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        
+        .messages {
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .welcome {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .welcome h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .welcome p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #764ba2;
+        }
+        
+        .btn-success {
+            background: #4caf50;
+        }
+        
+        .btn-success:hover {
+            background: #45a049;
+        }
+        
+        .btn-primary {
+            background: #2196F3;
+        }
+        
+        .btn-primary:hover {
+            background: #0b7dda;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .stat-card h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+        
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        
+        .room-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .room-card h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .room-card p {
+            color: #666;
+            font-size: 14px;
+            margin: 8px 0;
+        }
+        
+        .room-card .capacity {
+            background: #f0f4ff;
+            padding: 8px;
+            border-radius: 5px;
+            color: #667eea;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .room-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .room-actions a {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+        
+        .room-actions a:hover {
+            background: #764ba2;
+        }
+        
+        .room-actions .edit {
+            background: #2196F3;
+        }
+        
+        .room-actions .edit:hover {
+            background: #0b7dda;
+        }
+        
+        .room-actions .delete {
+            background: #d32f2f;
+        }
+        
+        .room-actions .delete:hover {
+            background: #b71c1c;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            background: white;
+            border-radius: 10px;
+        }
+        
+        .pending-table {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #333;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status.approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .actions a, .actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+            text-decoration: none;
+            border-radius: 3px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .approve-btn {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .approve-btn:hover {
+            background: #45a049;
+        }
+        
+        .reject-btn {
+            background: #d32f2f;
+            color: white;
+        }
+        
+        .reject-btn:hover {
+            background: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Admin Dashboard</h1>
+        <div class="navbar-right">
+            <span>Welcome, {{ user.username }}!</span>
+            {% if user_profile.role == 'superadmin' %}
+                <a href="/admin/panel/">Django Admin Panel</a>
+            {% endif %}
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <div class="welcome">
+            <h2>Welcome, {{ user.first_name|default:user.username }}!</h2>
+            <p>Manage your rooms and reservations from here.</p>
+            <div class="btn-group">
+                <a href="{% url 'manage_reservations' %}" class="btn btn-success">Manage Reservations</a>
+                {% if user_profile.role == 'admin' %}
+                    <a href="{% url 'add_room' %}" class="btn btn-primary">+ Add New Room</a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Pending</h3>
+                <div class="number">{{ pending_count }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Approved</h3>
+                <div class="number">{{ approved_count }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Rejected</h3>
+                <div class="number">{{ rejected_count }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Cancelled</h3>
+                <div class="number">{{ cancelled_count }}</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>Your Assigned Rooms</h3>
+            {% if rooms %}
+                <div class="rooms-grid">
+                    {% for room in rooms %}
+                        <div class="room-card">
+                            <h4>{{ room.name }}</h4>
+                            <p><strong>Campus:</strong> {{ room.campus.name }}</p>
+                            <p><strong>Location:</strong> {{ room.campus.location }}</p>
+                            <div class="capacity">Capacity: {{ room.capacity }} people</div>
+                            {% if room.description %}
+                                <p><strong>Description:</strong> {{ room.description }}</p>
+                            {% endif %}
+                            <p><strong>Admin Type:</strong> {{ room.admin_type.name }}</p>
+                            {% if user_profile.role == 'admin' %}
+                                <div class="room-actions">
+                                    <a href="{% url 'edit_room' room.id %}" class="edit">Edit</a>
+                                    <a href="{% url 'delete_room' room.id %}" class="delete">Delete</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-data">
+                    <p>No rooms assigned to you yet.</p>
+                    {% if user_profile.role == 'admin' %}
+                        <p><a href="{% url 'add_room' %}" class="btn">Create your first room</a></p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        
+    </div>
+</body>
+</html>

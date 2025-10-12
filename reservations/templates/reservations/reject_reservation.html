@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reject Reservation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .navbar {
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar h1 {
+            font-size: 24px;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background: #667eea;
+            border-radius: 5px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .reservation-info {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #d32f2f;
+        }
+        
+        .reservation-info p {
+            margin: 10px 0;
+            color: #555;
+        }
+        
+        .reservation-info strong {
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        button, .btn {
+            padding: 12px 20px;
+            background: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background 0.3s;
+            flex: 1;
+            text-align: center;
+        }
+        
+        button:hover {
+            background: #b71c1c;
+        }
+        
+        .btn-cancel {
+            background: #999;
+        }
+        
+        .btn-cancel:hover {
+            background: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Reject Reservation</h1>
+        <a href="{% url 'manage_reservations' %}">← Back</a>
+    </div>
+    
+    <div class="container">
+        <div class="form-container">
+            <h2>Reject Reservation</h2>
+            
+            <div class="reservation-info">
+                <p><strong>Student:</strong> {{ reservation.student.username }}</p>
+                <p><strong>Email:</strong> {{ reservation.student.email }}</p>
+                <p><strong>Room:</strong> {{ reservation.room.name }}</p>
+                <p><strong>Campus:</strong> {{ reservation.room.campus.name }}</p>
+                <p><strong>Date:</strong> {{ reservation.date }}</p>
+                <p><strong>Time:</strong> {{ reservation.start_time }} - {{ reservation.end_time }}</p>
+            </div>
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="rejection_note">Rejection Note (Optional)</label>
+                    <textarea id="rejection_note" name="rejection_note" placeholder="Explain why this reservation is being rejected. This message will be visible to the student..."></textarea>
+                    <div class="hint">The student will see this note when they check their reservation status.</div>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="submit">Reject Reservation</button>
+                    <a href="{% url 'manage_reservations' %}" class="btn btn-cancel">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
