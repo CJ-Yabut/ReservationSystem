@@ -4,6 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.models import UserProfile
+import random
+import string
+from django.utils import timezone
+from users.models import PasswordResetToken
 
 def student_login(request):
     # If already logged in, redirect to appropriate dashboard
@@ -167,3 +171,122 @@ def student_dashboard(request):
         'notifications': notifications,
     }
     return render(request, 'reservations/student_dashboard.html', context)
+
+def forgot_password(request):
+    """Forgot password page - student enters email"""
+    if request.user.is_authenticated:
+        profile = request.user.profile
+        if profile.role == 'student':
+            return redirect('student_dashboard')
+        elif profile.role in ['admin', 'superadmin']:
+            return redirect('admin_dashboard')
+    
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        
+        try:
+            user = User.objects.get(email=email)
+            profile = user.profile
+            
+            if profile.role != 'student':
+                messages.error(request, 'This email is not associated with a student account.')
+                return render(request, 'users/forgot_password.html')
+            
+            # Generate 6-digit verification code
+            verification_code = ''.join(random.choices(string.digits, k=6))
+            
+            # Delete old tokens for this email
+            PasswordResetToken.objects.filter(email=email).delete()
+            
+            # Create new token
+            token = PasswordResetToken.objects.create(
+                user=user,
+                email=email,
+                verification_code=verification_code
+            )
+            
+            # For now, just display the code (simulate email)
+            request.session['reset_email'] = email
+            request.session['reset_code'] = verification_code
+            messages.info(request, f'Verification code sent to {email}. (For demo: {verification_code})')
+            
+            return redirect('verify_code')
+        
+        except User.DoesNotExist:
+            messages.error(request, 'No account found with this email.')
+            return render(request, 'users/forgot_password.html')
+    
+    return render(request, 'users/forgot_password.html')
+
+def verify_code(request):
+    """Verify the code sent to email"""
+    if request.method == 'POST':
+        entered_code = request.POST.get('verification_code')
+        reset_email = request.session.get('reset_email')
+        
+        try:
+            token = PasswordResetToken.objects.get(email=reset_email, verification_code=entered_code)
+            
+            if not token.is_valid():
+                messages.error(request, 'Verification code has expired. Please try again.')
+                return redirect('forgot_password')
+            
+            # Code is valid, proceed to reset password
+            request.session['reset_user_id'] = token.user.id
+            token.delete()  # Delete used token
+            return redirect('reset_password')
+        
+        except PasswordResetToken.DoesNotExist:
+            messages.error(request, 'Invalid verification code.')
+            return render(request, 'users/verify_code.html')
+    
+    reset_email = request.session.get('reset_email')
+    if not reset_email:
+        return redirect('forgot_password')
+    
+    context = {'reset_email': reset_email}
+    return render(request, 'users/verify_code.html', context)
+
+def reset_password(request):
+    """Reset password after verification"""
+    reset_user_id = request.session.get('reset_user_id')
+    
+    if not reset_user_id:
+        messages.error(request, 'Session expired. Please start over.')
+        return redirect('student_login')
+    
+    try:
+        user = User.objects.get(id=reset_user_id)
+    except User.DoesNotExist:
+        return redirect('student_login')
+    
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        # Validate passwords
+        if len(password) < 6:
+            messages.error(request, 'Password must be at least 6 characters long.')
+            return render(request, 'users/reset_password.html')
+        
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'users/reset_password.html')
+        
+        # Update password
+        user.set_password(password)
+        user.save()
+        
+        # Clear session
+        if 'reset_email' in request.session:
+            del request.session['reset_email']
+        if 'reset_code' in request.session:
+            del request.session['reset_code']
+        if 'reset_user_id' in request.session:
+            del request.session['reset_user_id']
+        
+        messages.success(request, 'Password reset successful! Please log in with your new password.')
+        return redirect('student_login')
+    
+    context = {'email': user.email}
+    return render(request, 'users/reset_password.html', context)

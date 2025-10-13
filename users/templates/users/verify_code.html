@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TIP Room Reservation - Student Login</title>
+    <title>TIP Room Reservation - Verify Code</title>
     <style>
         * {
             margin: 0;
@@ -58,6 +58,24 @@
             padding-bottom: 15px;
         }
         
+        .info-text {
+            background: #f0f4ff;
+            color: #667eea;
+            padding: 12px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+            border-radius: 3px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .email-display {
+            text-align: center;
+            color: #b4b4b4;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        
         .messages {
             margin-bottom: 20px;
         }
@@ -67,12 +85,6 @@
             border-radius: 5px;
             margin-bottom: 10px;
             font-size: 14px;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
         }
         
         .alert-error {
@@ -93,14 +105,16 @@
             font-size: 14px;
         }
         
-        input[type="email"],
-        input[type="password"] {
+        input[type="text"] {
             width: 100%;
             padding: 14px;
             border: 2px solid #ddd;
             border-radius: 5px;
             font-size: 14px;
             transition: border-color 0.3s;
+            text-align: center;
+            letter-spacing: 5px;
+            font-size: 20px;
         }
         
         input:focus {
@@ -125,56 +139,20 @@
             transform: translateY(-2px);
         }
         
-        .forgot-password-link {
-            text-align: right;
-            margin-top: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .forgot-password-link a {
-            color: #b4b4b4;
-            text-decoration: none;
-            font-size: 13px;
-        }
-        
-        .forgot-password-link a:hover {
-            text-decoration: underline;
-        }
-        
-        .register-section {
+        .back-link {
             text-align: center;
             margin-top: 30px;
             padding-top: 30px;
             border-top: 1px solid #ddd;
         }
         
-        .register-section p {
-            color: #b4b4b4;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        
-        .register-btn {
-            background: linear-gradient(135deg, #b4b4b4 0%, #545454 100%);
-            margin-top: 10px;
-        }
-        
-        .register-btn:hover {
-            background: linear-gradient(135deg, #b4b4b4 0%, #545454 100%);
-        }
-        
-        .admin-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        .admin-link a {
+        .back-link a {
             color: #b4b4b4;
             text-decoration: none;
             font-size: 14px;
         }
         
-        .admin-link a:hover {
+        .back-link a:hover {
             text-decoration: underline;
         }
     </style>
@@ -187,7 +165,15 @@
         </div>
         
         <div class="auth-box">
-            <h2>Student Login</h2>
+            <h2>Verify Code</h2>
+            
+            <div class="email-display">
+                Code sent to: <strong>{{ reset_email }}</strong>
+            </div>
+            
+            <div class="info-text">
+                Enter the 6-digit verification code sent to your email. Code expires in 10 minutes.
+            </div>
             
             {% if messages %}
                 <div class="messages">
@@ -203,27 +189,16 @@
                 {% csrf_token %}
                 
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="name@tip.edu.ph" required>
+                    <label for="verification_code">Verification Code</label>
+                    <input type="text" id="verification_code" name="verification_code" placeholder="000000" maxlength="6" required pattern="[0-9]{6}">
                 </div>
                 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                </div>
-                
-                <div class="forgot-password-link">
-                    <a href="{% url 'forgot_password' %}">Forgot Password?</a>
-                </div>
-                
-                <button type="submit">Login</button>
+                <button type="submit">Verify Code</button>
             </form>
             
-            <div class="register-section">
-                <p>Don't have an account?</p>
-                <a href="{% url 'student_register' %}"><button type="button" class="register-btn">Register Now</button></a>
+            <div class="back-link">
+                <a href="{% url 'forgot_password' %}">← Try another email</a>
             </div>
-            
         </div>
     </div>
 </body>
