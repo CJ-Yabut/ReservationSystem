@@ -13,252 +13,285 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+            background:  #545454 100%;
+            color: #ffffff;
         }
         
+        /* Navbar */
         .navbar {
-            background: #333;
-            color: white;
-            padding: 15px 20px;
+            background: #545454;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 3px solid #ffffff; 
         }
         
-        .navbar h1 {
-            font-size: 24px;
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .navbar-brand {
+            color: rgb(255, 255, 255);
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background: #ffffff;
+            color: #545454;
         }
         
         .navbar-right {
             display: flex;
-            gap: 15px;
             align-items: center;
+            gap: 20px;
         }
         
-        .navbar a, .navbar button {
-            color: white;
-            text-decoration: none;
-            padding: 8px 15px;
-            background: #667eea;
-            border-radius: 5px;
+        .user-info {
+            color: #ffffff;
+            font-size: 13px;
+        }
+        
+        .logout-btn {
+            background: #545454;
+            color: #ffffff;
             border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
         
-        .navbar a:hover, .navbar button:hover {
-            background: #764ba2;
+        .logout-btn:hover {
+            background: #ffffff;
+            color: #545454;
         }
         
+        /* Container */
         .container {
             max-width: 1400px;
             margin: 30px auto;
-            padding: 20px;
+            padding: 0 20px;
         }
         
-        .messages {
+        /* Welcome Section */
+        .welcome-section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .welcome-section h2 {
+            color: #545454;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        
+        .welcome-section p {
+            color: #b4b4b4;
             margin-bottom: 20px;
         }
         
-        .alert {
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .welcome {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .welcome h2 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .welcome p {
-            color: #666;
-            margin-bottom: 15px;
-        }
-        
-        .btn-group {
+        .action-buttons {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
         
         .btn {
-            display: inline-block;
             padding: 10px 20px;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .btn:hover {
-            background: #764ba2;
-        }
-        
-        .btn-success {
-            background: #4caf50;
-        }
-        
-        .btn-success:hover {
-            background: #45a049;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            font-size: 14px;
         }
         
         .btn-primary {
-            background: #2196F3;
+            background: #545454;
+            color: white;
         }
         
         .btn-primary:hover {
-            background: #0b7dda;
+            background: #b4b4b4;
+            color: #545454;
         }
         
-        .stats {
+        .btn-secondary {
+            background: #b4b4b4;
+            color: #545454;
+        }
+        
+        .btn-secondary:hover {
+            background: #545454;
+            color: white;
+        }
+        
+        /* Stats Section */
+        .stats-section {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            gap: 20px;
             margin-bottom: 30px;
         }
         
         .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #667eea;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 5px solid #b4b4b4;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .stat-card h3 {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
+            color: #000000;
+            font-size: 13px;
             font-weight: normal;
+            margin-bottom: 10px;
+            text-transform: uppercase;
         }
         
         .stat-card .number {
             font-size: 36px;
             font-weight: bold;
-            color: #667eea;
+            color: #545454;
         }
         
-        .section {
-            margin-bottom: 30px;
-        }
-        
-        .section h3 {
-            color: #333;
+        /* Section Title */
+        .section-title {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: bold;
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
+            border-bottom: 3px solid #ffffff;
+        }
+        
+        /* Rooms Grid */
+        .rooms-section {
+            margin-bottom: 40px;
         }
         
         .rooms-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
         }
         
         .room-card {
             background: white;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #667eea;
+            border-radius: 8px;
+            border-left: 5px solid #b4b4b4;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .room-card h4 {
-            color: #333;
-            margin-bottom: 10px;
+            color: #545454;
             font-size: 18px;
+            margin-bottom: 15px;
         }
         
-        .room-card p {
-            color: #666;
-            font-size: 14px;
-            margin: 8px 0;
+        .room-info {
+            margin-bottom: 15px;
         }
         
-        .room-card .capacity {
-            background: #f0f4ff;
-            padding: 8px;
-            border-radius: 5px;
-            color: #667eea;
+        .room-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .room-info-label {
+            color: #b4b4b4;
             font-weight: bold;
-            margin: 10px 0;
+        }
+        
+        .room-info-value {
+            color: #545454;
+        }
+        
+        .capacity-highlight {
+            background: #b4b4b4;
+            color: #545454;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 15px 0;
+            text-align: center;
         }
         
         .room-actions {
             display: flex;
             gap: 8px;
-            margin-top: 12px;
+            margin-top: 15px;
         }
         
         .room-actions a {
             flex: 1;
             padding: 8px;
             text-align: center;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
             border-radius: 5px;
+            text-decoration: none;
             font-size: 12px;
-            transition: background 0.3s;
+            font-weight: bold;
+            transition: all 0.3s;
         }
         
-        .room-actions a:hover {
-            background: #764ba2;
+        .btn-edit {
+            background: #545454;
+            color: white;
         }
         
-        .room-actions .edit {
-            background: #2196F3;
+        .btn-edit:hover {
+            background: #b4b4b4;
+            color: #545454;
         }
         
-        .room-actions .edit:hover {
-            background: #0b7dda;
+        .btn-delete {
+            background: #d9d9d9;
+            color: #545454;
+            border: 2px solid #545454;
         }
         
-        .room-actions .delete {
-            background: #d32f2f;
+        .btn-delete:hover {
+            background: #545454;
+            color: white;
         }
         
-        .room-actions .delete:hover {
-            background: #b71c1c;
-        }
-        
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-            background: white;
-            border-radius: 10px;
+        /* Pending Reservations */
+        .pending-section {
+            margin-bottom: 40px;
         }
         
         .pending-table {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
         
@@ -268,85 +301,147 @@
         }
         
         th {
-            background: #333;
+            background: #545454;
             color: white;
             padding: 15px;
             text-align: left;
             font-weight: bold;
+            font-size: 13px;
         }
         
         td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #ddd;
+            padding: 15px;
+            border-bottom: 1px solid #d9d9d9;
+            color: #545454;
+            font-size: 13px;
         }
         
         tr:hover {
-            background: #f9f9f9;
+            background: #b4b4b4;
         }
         
-        .status {
+        .status-badge {
             display: inline-block;
-            padding: 5px 12px;
-            border-radius: 5px;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 11px;
             font-weight: bold;
-            font-size: 12px;
         }
         
-        .status.pending {
+        .status-pending {
             background: #fff3cd;
             color: #856404;
         }
         
-        .status.approved {
+        /* Actions in table */
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .table-actions a {
+            padding: 6px 12px;
+            border-radius: 3px;
+            font-size: 11px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .approve-action {
+            background: #545454;
+            color: white;
+        }
+        
+        .approve-action:hover {
+            background: #b4b4b4;
+            color: #545454;
+        }
+        
+        .reject-action {
+            background: #d9d9d9;
+            color: #545454;
+            border: 1px solid #545454;
+        }
+        
+        .reject-action:hover {
+            background: #545454;
+            color: white;
+        }
+        
+        /* No data */
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #b4b4b4;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .messages {
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .alert-success {
             background: #d4edda;
             color: #155724;
+            border-left: 4px solid #28a745;
         }
         
-        .actions {
-            display: flex;
-            gap: 5px;
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
         }
         
-        .actions a, .actions button {
-            padding: 6px 12px;
-            font-size: 12px;
-            text-decoration: none;
-            border-radius: 3px;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .approve-btn {
-            background: #4caf50;
-            color: white;
-        }
-        
-        .approve-btn:hover {
-            background: #45a049;
-        }
-        
-        .reject-btn {
-            background: #d32f2f;
-            color: white;
-        }
-        
-        .reject-btn:hover {
-            background: #b71c1c;
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Navbar -->
     <div class="navbar">
-        <h1>Admin Dashboard</h1>
+        <div class="navbar-left">
+            <div class="navbar-brand">RESERVATION SYSTEM</div>
+            <ul class="nav-links">
+                <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'manage_reservations' %}">Manage Reservations</a></li>
+                {% if user_profile.role == 'superadmin' %}
+                    <li><a href="/admin/panel/">Django Panel</a></li>
+                {% endif %}
+            </ul>
+        </div>
         <div class="navbar-right">
-            <span>Welcome, {{ user.username }}!</span>
-            {% if user_profile.role == 'superadmin' %}
-                <a href="/admin/panel/">Django Admin Panel</a>
-            {% endif %}
-            <a href="{% url 'logout' %}">Logout</a>
+            <div class="user-info">
+                {{ user.username }} ({{ user_profile.get_role_display }})
+            </div>
+            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
         </div>
     </div>
     
+    <!-- Main Content -->
     <div class="container">
         {% if messages %}
             <div class="messages">
@@ -358,18 +453,20 @@
             </div>
         {% endif %}
         
-        <div class="welcome">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
             <h2>Welcome, {{ user.first_name|default:user.username }}!</h2>
             <p>Manage your rooms and reservations from here.</p>
-            <div class="btn-group">
-                <a href="{% url 'manage_reservations' %}" class="btn btn-success">Manage Reservations</a>
+            <div class="action-buttons">
+                <a href="{% url 'manage_reservations' %}" class="btn btn-primary">Manage Reservations</a>
                 {% if user_profile.role == 'admin' %}
-                    <a href="{% url 'add_room' %}" class="btn btn-primary">+ Add New Room</a>
+                    <a href="{% url 'add_room' %}" class="btn btn-secondary">+ Add Room</a>
                 {% endif %}
             </div>
         </div>
         
-        <div class="stats">
+        <!-- Stats Cards -->
+        <div class="stats-section">
             <div class="stat-card">
                 <h3>Pending</h3>
                 <div class="number">{{ pending_count }}</div>
@@ -388,24 +485,41 @@
             </div>
         </div>
         
-        <div class="section">
-            <h3>Your Assigned Rooms</h3>
+        <!-- Your Assigned Rooms -->
+        <div class="rooms-section">
+            <h3 class="section-title">Assigned Rooms</h3>
             {% if rooms %}
                 <div class="rooms-grid">
                     {% for room in rooms %}
                         <div class="room-card">
                             <h4>{{ room.name }}</h4>
-                            <p><strong>Campus:</strong> {{ room.campus.name }}</p>
-                            <p><strong>Location:</strong> {{ room.campus.location }}</p>
-                            <div class="capacity">Capacity: {{ room.capacity }} people</div>
+                            <div class="room-info">
+                                <div class="room-info-row">
+                                    <span class="room-info-label">Campus:</span>
+                                    <span class="room-info-value">{{ room.campus.name }}</span>
+                                </div>
+                                <div class="room-info-row">
+                                    <span class="room-info-label">Location:</span>
+                                    <span class="room-info-value">{{ room.campus.location }}</span>
+                                </div>
+                                <div class="room-info-row">
+                                    <span class="room-info-label">Admin Type:</span>
+                                    <span class="room-info-value">{{ room.admin_type.name }}</span>
+                                </div>
+                            </div>
+                            <div class="capacity-highlight">
+                                Capacity: {{ room.capacity }} people
+                            </div>
                             {% if room.description %}
-                                <p><strong>Description:</strong> {{ room.description }}</p>
+                                <div class="room-info-row">
+                                    <span class="room-info-label">Description:</span>
+                                    <span class="room-info-value">{{ room.description }}</span>
+                                </div>
                             {% endif %}
-                            <p><strong>Admin Type:</strong> {{ room.admin_type.name }}</p>
                             {% if user_profile.role == 'admin' %}
                                 <div class="room-actions">
-                                    <a href="{% url 'edit_room' room.id %}" class="edit">Edit</a>
-                                    <a href="{% url 'delete_room' room.id %}" class="delete">Delete</a>
+                                    <a href="{% url 'edit_room' room.id %}" class="btn-edit">Edit</a>
+                                    <a href="{% url 'delete_room' room.id %}" class="btn-delete">Delete</a>
                                 </div>
                             {% endif %}
                         </div>
@@ -415,12 +529,58 @@
                 <div class="no-data">
                     <p>No rooms assigned to you yet.</p>
                     {% if user_profile.role == 'admin' %}
-                        <p><a href="{% url 'add_room' %}" class="btn">Create your first room</a></p>
+                        <p><a href="{% url 'add_room' %}" class="btn btn-primary" style="margin-top: 15px;">Create your first room</a></p>
                     {% endif %}
                 </div>
             {% endif %}
         </div>
         
+        <!-- Recent Pending Reservations -->
+        {% if recent_pending %}
+            <div class="pending-section">
+                <h3 class="section-title">Recent Pending Reservations</h3>
+                <div class="pending-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Room</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                {% if user_profile.role == 'admin' %}
+                                    <th>Actions</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reservation in recent_pending %}
+                                <tr>
+                                    <td>{{ reservation.student.username }}</td>
+                                    <td>{{ reservation.room.name }}</td>
+                                    <td>{{ reservation.date }}</td>
+                                    <td>{{ reservation.start_time }} - {{ reservation.end_time }}</td>
+                                    <td><span class="status-badge status-pending">{{ reservation.get_status_display }}</span></td>
+                                    {% if user_profile.role == 'admin' %}
+                                        <td>
+                                            <div class="table-actions">
+                                                <a href="{% url 'approve_reservation' reservation.id %}" class="approve-action">Approve</a>
+                                                <a href="{% url 'reject_reservation' reservation.id %}" class="reject-action">Reject</a>
+                                            </div>
+                                        </td>
+                                    {% else %}
+                                        <td><span style="color: #b4b4b4;">View Only</span></td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <p style="text-align: center; margin-top: 15px; color: #b4b4b4; font-size: 13px;">
+                    <a href="{% url 'manage_reservations' %}" style="color: #545454; font-weight: bold;">View all reservations →</a>
+                </p>
+            </div>
+        {% endif %}
     </div>
 </body>
 </html>
