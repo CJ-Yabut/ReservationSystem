@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #b4b4b4 0%, #545454 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -54,18 +54,18 @@
         }
         
         .auth-box {
-            background: white;
+            background: linear-gradient(#363636 0%);
             padding: 50px;
             border-radius: 10px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
         
         .auth-box h2 {
-            color: #333;
+            color: #ffffff;
             margin-bottom: 30px;
             font-size: 28px;
             text-align: center;
-            border-bottom: 3px solid #667eea;
+            border-bottom: 3px solid #b4b4b4;
             padding-bottom: 15px;
         }
         
@@ -99,7 +99,7 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
+            color: #ffffff;
             font-weight: bold;
             font-size: 14px;
         }
@@ -122,7 +122,7 @@
         button {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #b4b4b4 0%, #545454 100%);
             color: white;
             border: none;
             border-radius: 5px;
@@ -144,7 +144,7 @@
         }
         
         .student-link a {
-            color: #667eea;
+            color: #ffffff;
             text-decoration: none;
             font-size: 14px;
         }
@@ -157,13 +157,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎓 TIP Room Reservation System</h1>
-            <p>Technological Institute of the Philippines</p>
-            <div class="admin-badge">👤 ADMIN PORTAL</div>
+            <h1>RESERVATION SYSTEM</h1>
+            <p>Technological Institute of the Philippines</p> 
         </div>
         
         <div class="auth-box">
-            <h2>Admin Login</h2>
+            <h2>Admin Portal</h2>
             
             {% if messages %}
                 <div class="messages">
