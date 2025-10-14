@@ -141,13 +141,13 @@
         }
         
         .btn-secondary {
-            background: #b4b4b4;
-            color: #545454;
+            background: #545454;
+            color: #ffffff;
         }
         
         .btn-secondary:hover {
-            background: #545454;
-            color: white;
+            background: #b4b4b4;
+            color: #545454;
         }
         
         /* Stats Section */
@@ -183,11 +183,12 @@
         /* Section Title */
         .section-title {
             color: #ffffff;
-            font-size: 20px;
+            font-size: 30px;
             font-weight: bold;
             margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #ffffff;
+            padding-bottom: 1px;
+    
+
         }
         
         /* Rooms Grid */
@@ -202,7 +203,7 @@
         }
         
         .room-card {
-            background: white;
+            background: rgb(255, 255, 255);
             padding: 20px;
             border-radius: 8px;
             border-left: 5px solid #b4b4b4;
@@ -282,124 +283,25 @@
             background: #545454;
             color: white;
         }
-        
-        /* Pending Reservations */
-        .pending-section {
-            margin-bottom: 40px;
+
+        .campus-header {
+            border-top: 3px solid #ffffff;
+            padding-top: 20px;
+            margin-top: 40px;
+            margin-bottom: 15px;
         }
-        
-        .pending-table {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+
+        .campus-header h3 {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 5px;
         }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th {
-            background: #545454;
-            color: white;
-            padding: 15px;
-            text-align: left;
-            font-weight: bold;
-            font-size: 13px;
-        }
-        
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #d9d9d9;
-            color: #545454;
-            font-size: 13px;
-        }
-        
-        tr:hover {
-            background: #b4b4b4;
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        /* Actions in table */
-        .table-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .table-actions a {
-            padding: 6px 12px;
-            border-radius: 3px;
-            font-size: 11px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        
-        .approve-action {
-            background: #545454;
-            color: white;
-        }
-        
-        .approve-action:hover {
-            background: #b4b4b4;
-            color: #545454;
-        }
-        
-        .reject-action {
-            background: #d9d9d9;
-            color: #545454;
-            border: 1px solid #545454;
-        }
-        
-        .reject-action:hover {
-            background: #545454;
-            color: white;
-        }
-        
-        /* No data */
-        .no-data {
-            text-align: center;
-            padding: 40px;
+
+        .campus-header p {
             color: #b4b4b4;
-            background: white;
-            border-radius: 8px;
+            font-size: 13px;
         }
-        
-        .messages {
-            margin-bottom: 20px;
-        }
-        
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border-left: 4px solid #28a745;
-        }
-        
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border-left: 4px solid #dc3545;
-        }
-        
+
         /* Responsive */
         @media (max-width: 768px) {
             .nav-links {
@@ -408,14 +310,6 @@
             
             .rooms-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            table {
-                font-size: 12px;
-            }
-            
-            th, td {
-                padding: 10px;
             }
         }
     </style>
@@ -485,46 +379,43 @@
             </div>
         </div>
         
-        <!-- Your Assigned Rooms -->
+        <!-- Grouped Rooms by Campus -->
         <div class="rooms-section">
-            <h3 class="section-title">Assigned Rooms</h3>
+            <h3 class="section-title">Assigned Facility</h3>
             {% if rooms %}
-                <div class="rooms-grid">
-                    {% for room in rooms %}
-                        <div class="room-card">
-                            <h4>{{ room.name }}</h4>
-                            <div class="room-info">
-                                <div class="room-info-row">
-                                    <span class="room-info-label">Campus:</span>
-                                    <span class="room-info-value">{{ room.campus.name }}</span>
+                {% regroup rooms by campus as campus_groups %}
+                {% for group in campus_groups %}
+                    <div class="campus-header">
+                        <h3>{{ group.grouper.name }}</h3>
+                        <p>{{ group.grouper.location }}</p>
+                    </div>
+                    <div class="rooms-grid">
+                        {% for room in group.list %}
+                            <div class="room-card">
+                                <h4>{{ room.name }}</h4>
+                                <div class="room-info">
+                                    <div class="room-info-row">
+                                        <span class="room-info-label">Type:</span>
+                                        <span class="room-info-value">{{ room.room_type }}</span>
+                                    </div>
+                                    <div class="room-info-row">
+                                        <span class="room-info-label">Admin Type:</span>
+                                        <span class="room-info-value">{{ room.admin_type.name }}</span>
+                                    </div>
                                 </div>
-                                <div class="room-info-row">
-                                    <span class="room-info-label">Location:</span>
-                                    <span class="room-info-value">{{ room.campus.location }}</span>
+                                <div class="capacity-highlight">
+                                    Capacity: {{ room.capacity }} people
                                 </div>
-                                <div class="room-info-row">
-                                    <span class="room-info-label">Admin Type:</span>
-                                    <span class="room-info-value">{{ room.admin_type.name }}</span>
-                                </div>
+                                {% if user_profile.role == 'admin' %}
+                                    <div class="room-actions">
+                                        <a href="{% url 'edit_room' room.id %}" class="btn-edit">Edit</a>
+                                        <a href="{% url 'delete_room' room.id %}" class="btn-delete">Delete</a>
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="capacity-highlight">
-                                Capacity: {{ room.capacity }} people
-                            </div>
-                            {% if room.description %}
-                                <div class="room-info-row">
-                                    <span class="room-info-label">Description:</span>
-                                    <span class="room-info-value">{{ room.description }}</span>
-                                </div>
-                            {% endif %}
-                            {% if user_profile.role == 'admin' %}
-                                <div class="room-actions">
-                                    <a href="{% url 'edit_room' room.id %}" class="btn-edit">Edit</a>
-                                    <a href="{% url 'delete_room' room.id %}" class="btn-delete">Delete</a>
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
             {% else %}
                 <div class="no-data">
                     <p>No rooms assigned to you yet.</p>
@@ -534,53 +425,6 @@
                 </div>
             {% endif %}
         </div>
-        
-        <!-- Recent Pending Reservations -->
-        {% if recent_pending %}
-            <div class="pending-section">
-                <h3 class="section-title">Recent Pending Reservations</h3>
-                <div class="pending-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Student</th>
-                                <th>Room</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Status</th>
-                                {% if user_profile.role == 'admin' %}
-                                    <th>Actions</th>
-                                {% endif %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for reservation in recent_pending %}
-                                <tr>
-                                    <td>{{ reservation.student.username }}</td>
-                                    <td>{{ reservation.room.name }}</td>
-                                    <td>{{ reservation.date }}</td>
-                                    <td>{{ reservation.start_time }} - {{ reservation.end_time }}</td>
-                                    <td><span class="status-badge status-pending">{{ reservation.get_status_display }}</span></td>
-                                    {% if user_profile.role == 'admin' %}
-                                        <td>
-                                            <div class="table-actions">
-                                                <a href="{% url 'approve_reservation' reservation.id %}" class="approve-action">Approve</a>
-                                                <a href="{% url 'reject_reservation' reservation.id %}" class="reject-action">Reject</a>
-                                            </div>
-                                        </td>
-                                    {% else %}
-                                        <td><span style="color: #b4b4b4;">View Only</span></td>
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <p style="text-align: center; margin-top: 15px; color: #b4b4b4; font-size: 13px;">
-                    <a href="{% url 'manage_reservations' %}" style="color: #545454; font-weight: bold;">View all reservations →</a>
-                </p>
-            </div>
-        {% endif %}
     </div>
 </body>
 </html>
