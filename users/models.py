@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from rooms.models import AdminType
 from django.utils import timezone
 from datetime import timedelta
+from django.contrib.auth.models import User
+from django.db import models
+
 
 class UserProfile(models.Model):
     ROLE_CHOICES = [
@@ -36,3 +39,11 @@ class PasswordResetToken(models.Model):
     
     def __str__(self):
         return f"{self.email} - {self.verification_code}"
+    
+
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_picture = models.FileField(upload_to='avatars/', blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username

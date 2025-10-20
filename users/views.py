@@ -8,6 +8,10 @@ import random
 import string
 from django.utils import timezone
 from users.models import PasswordResetToken
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import UserUpdateForm, ProfileUpdateForm
 
 def student_login(request):
     # If already logged in, redirect to appropriate dashboard
@@ -290,3 +294,24 @@ def reset_password(request):
     
     context = {'email': user.email}
     return render(request, 'users/reset_password.html', context)
+
+@login_required
+def edit_profile(request):
+    if not hasattr(request.user, 'student'):
+        messages.error(request, "Access denied: Students only.")
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.student)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, 'Your profile has been updated!')
+            return redirect('edit_profile')
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.student)
+
+    context = {'u_form': u_form, 'p_form': p_form}
+    return render(request, 'students/edit_profile.html', context)

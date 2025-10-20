@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-t%0zuc3-i3es3ti2jh7a^%lkt8_v^cz60$uld!iy0h7cm@)bj&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rooms',
     'reservations',
-    'users'
+    'users',
+    'students',
 ]
 
 MIDDLEWARE = [
@@ -123,3 +124,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Media settings (add if missing)
+MEDIA_URL = '/media/'
+try:
+    MEDIA_ROOT = BASE_DIR / 'media'
+except Exception:
+    import os
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

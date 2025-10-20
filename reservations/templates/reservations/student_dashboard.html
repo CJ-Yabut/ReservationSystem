@@ -366,6 +366,8 @@
         <h1>Student Dashboard</h1>
         <div class="navbar-right">
             <span>Welcome, {{ user.username }}</span>
+            <a href="{% url 'students:profile' %}">My Profile</a>
+            <a href="{% url 'students:edit_profile' %}">Edit Profile</a>
             <a href="{% url 'logout' %}">Logout</a>
         </div>
     </div>
