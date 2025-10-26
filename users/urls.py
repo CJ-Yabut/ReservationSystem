@@ -14,4 +14,6 @@ urlpatterns = [
     path('edit-profile/', views.edit_profile, name='edit_profile'),
     path('change-password/', auth_views.PasswordChangeView.as_view(template_name='students/change_password.html'), name='change_password'),
     path('password-change-done/', auth_views.PasswordChangeDoneView.as_view(template_name='students/password_change_done.html'), name='password_change_done'),
+    path('verify-email/', views.verify_email, name='verify_email'),
+
 ]
