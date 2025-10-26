@@ -16,3 +16,5 @@ env/
 # Ignore media and static folders
 media/
 staticfiles/
+
+*.log
