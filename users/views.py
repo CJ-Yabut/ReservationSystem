@@ -33,6 +33,9 @@ def student_login(request):
             
             if user is not None:
                 profile = user.profile
+                if not profile.email_verified:
+                    messages.error(request,'Please verify your email before logging in')
+                    return redirect('verify_email')
                 if profile.role == 'student':
                     login(request, user)
                     messages.success(request, f'Welcome back, {user.username}!')
@@ -47,65 +50,95 @@ def student_login(request):
     return render(request, 'users/student_login.html')
 
 def student_register(request):
-    # If already logged in, redirect to appropriate dashboard
     if request.user.is_authenticated:
         profile = request.user.profile
         if profile.role == 'student':
             return redirect('student_dashboard')
         elif profile.role in ['admin', 'superadmin']:
             return redirect('admin_dashboard')
-    
+
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
-        
+
         # Validate email domain
         if not email.endswith('@tip.edu.ph'):
             messages.error(request, 'Please use your TIP email address (@tip.edu.ph)')
             return render(request, 'users/student_register.html')
-        
-        # Check if email already exists
-        if User.objects.filter(email=email).exists():
-            messages.error(request, 'This email is already registered.')
-            return render(request, 'users/student_register.html')
-        
-        # Check if username already exists
+
+        # Check duplicates
+        existing_user = User.objects.filter(email=email).first()
+        if existing_user:
+            profile = existing_user.profile
+            if not profile.email_verified:
+                # Resend verification code
+                verification_code = ''.join(random.choices(string.digits, k=6))
+                profile.verification_code = verification_code
+                profile.save()
+
+                # Send verification email (now prints to console)
+                from django.core.mail import send_mail
+                send_mail(
+                    subject='Verify your TIP Reservation Account',
+                    message=f'Hello {existing_user.username},\n\nYour verification code is: {verification_code}\n\nEnter this code to verify your account.',
+                    from_email=None,
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
+
+                request.session['pending_email'] = email
+                messages.info(request, f'Verification code resent. Please check your console for the code and verify your account.')
+                return redirect('verify_email')
+            else:
+                messages.error(request, 'This email is already registered and verified.')
+                return render(request, 'users/student_register.html')
         if User.objects.filter(username=username).exists():
             messages.error(request, 'This username is already taken.')
             return render(request, 'users/student_register.html')
-        
-        # Check password match
+
+        # Check passwords
         if password != confirm_password:
             messages.error(request, 'Passwords do not match.')
             return render(request, 'users/student_register.html')
-        
-        # Check password length
         if len(password) < 6:
             messages.error(request, 'Password must be at least 6 characters long.')
             return render(request, 'users/student_register.html')
-        
-        # Create user
+
         try:
-            user = User.objects.create_user(
-                username=username,
-                email=email,
-                password=password
-            )
-            
-            # Create student profile
+            # Create inactive user
+            user = User.objects.create_user(username=username, email=email, password=password)
+
+            # Generate a 6-digit verification code
+            verification_code = ''.join(random.choices(string.digits, k=6))
+
+            # Create profile
             UserProfile.objects.create(
                 user=user,
-                role='student'
+                role='student',
+                email_verified=False,
+                verification_code=verification_code
             )
-            
-            messages.success(request, 'Registration successful! Please log in.')
-            return redirect('student_login')
+
+            # Send verification email
+            from django.core.mail import send_mail
+            send_mail(
+                subject='Verify your TIP Reservation Account',
+                message=f'Hello {username},\n\nYour verification code is: {verification_code}\n\nEnter this code to verify your account.',
+                from_email=None,
+                recipient_list=[email],
+                fail_silently=False,
+            )
+
+            # Save email to session for next step
+            request.session['pending_email'] = email
+            messages.info(request, f'Verification code sent to {email}. Please verify your account.')
+            return redirect('verify_email')
+
         except Exception as e:
             messages.error(request, f'Error creating account: {str(e)}')
-            return render(request, 'users/student_register.html')
-    
+
     return render(request, 'users/student_register.html')
 
 def admin_login(request):
@@ -315,3 +348,31 @@ def edit_profile(request):
 
     context = {'u_form': u_form, 'p_form': p_form}
     return render(request, 'students/edit_profile.html', context)
+
+def verify_email(request):
+    pending_email = request.session.get('pending_email')
+    if not pending_email:
+        messages.error(request, 'No registration found. Please register first.')
+        return redirect('student_register')
+
+    if request.method == 'POST':
+        entered_code = request.POST.get('verification_code')
+        try:
+            user = User.objects.get(email=pending_email)
+            profile = user.profile
+
+            if profile.verification_code == entered_code:
+                profile.email_verified = True
+                profile.verification_code = ''
+                profile.save()
+
+                messages.success(request, 'Email verified successfully! You can now log in.')
+                del request.session['pending_email']
+                return redirect('student_login')
+            else:
+                messages.error(request, 'Invalid verification code. Please try again.')
+        except User.DoesNotExist:
+            messages.error(request, 'User not found. Please register again.')
+            return redirect('student_register')
+
+    return render(request, 'users/verify_email.html', {'email': pending_email})

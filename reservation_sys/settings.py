@@ -132,3 +132,15 @@ try:
 except Exception:
     import os
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# ==========================
+# EMAIL CONFIGURATION (GMAIL SMTP)
+# ==========================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'faker.madah@gmail.com'
+EMAIL_HOST_PASSWORD = 'zvue segd myam lkwj'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
