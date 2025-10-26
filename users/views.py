@@ -242,11 +242,19 @@ def forgot_password(request):
                 verification_code=verification_code
             )
             
-            # For now, just display the code (simulate email)
+            # Send verification email
+            from django.core.mail import send_mail
+            send_mail(
+                subject='Password Reset for TIP Reservation Account',
+                message=f'Hello {user.username},\n\nYour password reset verification code is: {verification_code}\n\nEnter this code to reset your password. Code expires in 10 minutes.',
+                from_email=None,
+                recipient_list=[email],
+                fail_silently=False,
+            )
+
             request.session['reset_email'] = email
-            request.session['reset_code'] = verification_code
-            messages.info(request, f'Verification code sent to {email}. (For demo: {verification_code})')
-            
+            messages.info(request, f'Verification code sent to {email}. Please check your email.')
+
             return redirect('verify_code')
         
         except User.DoesNotExist:
