@@ -58,6 +58,10 @@ def student_register(request):
             return redirect('admin_dashboard')
 
     if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        student_number = request.POST.get('student_number')
+        department = request.POST.get('department')
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -119,6 +123,16 @@ def student_register(request):
                 role='student',
                 email_verified=False,
                 verification_code=verification_code
+            )
+
+            # Create student profile
+            from users.models import Student
+            Student.objects.create(
+                user=user,
+                first_name=first_name,
+                last_name=last_name,
+                student_number=student_number,
+                department=department
             )
 
             # Send verification email

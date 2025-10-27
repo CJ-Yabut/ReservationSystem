@@ -178,28 +178,60 @@
             
             <form method="POST">
                 {% csrf_token %}
-                
+
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" placeholder="Enter your last name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="student_number">Student Number</label>
+                    <input type="text" id="student_number" name="student_number" placeholder="Enter your student number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <select id="department" name="department" style="height: 50px;" required>
+                        <option value="">Select your department</option>
+                        <option value="Architecture">Architecture</option>
+                        <option value="Chemical Engineer">Chemical Engineer</option>
+                        <option value="Civil Engineer">Civil Engineer</option>
+                        <option value="Computer Engineer">Computer Engineer</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Electrical Engineer">Electrical Engineer</option>
+                        <option value="Electronic Engineer">Electronic Engineer</option>
+                        <option value="Industrial Engineer">Industrial Engineer</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Mechanical Engineer">Mechanical Engineer</option>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" placeholder="Choose a username" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="email">TIP Email Address</label>
                     <input type="email" id="email" name="email" placeholder="name@tip.edu.ph" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="Enter password" required>
                     <div class="password-hint">Minimum 6 characters</div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="confirm_password">Confirm Password</label>
                     <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required>
                 </div>
-                
+
                 <button type="submit">Register</button>
             </form>
             
