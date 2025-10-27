@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Reservation Status Update</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f8f9fa; padding: 20px; text-align: center; border-radius: 5px; }
+        .content { padding: 20px 0; }
+        .status { font-weight: bold; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .approved { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .rejected { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .details { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Reservation System</h1>
+            <p>Status Update Notification</p>
+        </div>
+
+        <div class="content">
+            <p>Dear {{ student.get_full_name|default:student.username }},</p>
+
+            <p>Your reservation has been updated with the following details:</p>
+
+            <div class="details">
+                <strong>Room:</strong> {{ room.name }}<br>
+                <strong>Date:</strong> {{ reservation.date }}<br>
+                <strong>Time:</strong> {{ reservation.start_time }} - {{ reservation.end_time }}<br>
+                {% if reservation.reason %}
+                <strong>Reason:</strong> {{ reservation.reason }}<br>
+                {% endif %}
+            </div>
+
+            <div class="status {% if action == 'approved' %}approved{% else %}rejected{% endif %}">
+                Status: {{ status }}
+            </div>
+
+            {% if reservation.rejection_note %}
+            <div class="details">
+                <strong>Rejection Note:</strong><br>
+                {{ reservation.rejection_note }}
+            </div>
+            {% endif %}
+
+            <p>Thank you for using our reservation system.</p>
+
+            <p>Best regards,<br>
+            Reservation System Team</p>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated message. Please do not reply to this email.</p>
+        </div>
+    </div>
+</body>
+</html>

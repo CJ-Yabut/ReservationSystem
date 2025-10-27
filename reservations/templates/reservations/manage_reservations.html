@@ -332,6 +332,7 @@
                             <th>Date</th>
                             <th>Time</th>
                             <th>Status</th>
+                            <th>Letter</th> <!-- ✅ New column -->
                             {% if user_profile.role == 'admin' %}
                                 <th>Actions</th>
                             {% else %}
@@ -347,7 +348,21 @@
                                 <td>{{ reservation.room.campus.name }}</td>
                                 <td>{{ reservation.date }}</td>
                                 <td>{{ reservation.start_time }} - {{ reservation.end_time }}</td>
-                                <td><span class="status {{ reservation.status }}">{{ reservation.get_status_display }}</span></td>
+                                <td>
+                                    <span class="status {{ reservation.status }}">
+                                        {{ reservation.get_status_display }}
+                                    </span>
+                                </td>
+
+                                <!-- ✅ New column: View Letter link -->
+                                <td>
+                                    {% if reservation.letter_file %}
+                                        <a href="{{ reservation.letter_file.url }}" target="_blank">View Letter</a>
+                                    {% else %}
+                                        No Letter
+                                    {% endif %}
+                                </td>
+
                                 <td>
                                     {% if reservation.status == 'pending' %}
                                         {% if user_profile.role == 'admin' %}
@@ -365,9 +380,10 @@
                                     {% endif %}
                                 </td>
                             </tr>
+
                             {% if reservation.rejection_note %}
                                 <tr style="background: #fff3cd;">
-                                    <td colspan="7" style="color: #856404; font-size: 13px;">
+                                    <td colspan="8" style="color: #856404; font-size: 13px;">
                                         <strong>Rejection Note:</strong> {{ reservation.rejection_note }}
                                     </td>
                                 </tr>
