@@ -31,9 +31,18 @@ except (ImportError, OSError):
 def book_room(request):
     if request.method == 'POST':
         room_id = request.POST.get('room')
-        date = request.POST.get('date')
-        start_time = request.POST.get('start_time')
-        end_time = request.POST.get('end_time')
+        date_str = request.POST.get('date')
+        start_time_str = request.POST.get('start_time')
+        end_time_str = request.POST.get('end_time')
+
+        from datetime import datetime, date, time
+        try:
+            date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            start_time = datetime.strptime(start_time_str, '%H:%M').time()
+            end_time = datetime.strptime(end_time_str, '%H:%M').time()
+        except ValueError:
+            messages.error(request, 'Invalid date or time format.')
+            return redirect('book_room')
         
         try:
             room = Room.objects.get(id=room_id)
@@ -68,7 +77,7 @@ def book_room(request):
             try:
                 html_content = render_to_string('reservations/letter_template.html', {
                     'reservation': reservation,
-                    'student': request.user,
+                    'student': request.user.student,
                     'room': room,
                     'now': timezone.now(),
                 })

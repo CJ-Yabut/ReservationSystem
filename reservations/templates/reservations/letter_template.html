@@ -19,12 +19,13 @@
     <div class="meta">
         <div><strong>Date:</strong> {{ now|date:"F j, Y" }}</div>
         <div><strong>To:</strong> {{ room.name }}</div>
+        <div><strong>Reservation Date:</strong> {{ reservation.date|date:"F j, Y" }}</div>
     </div>
 
     <p>Good day!</p>
 
     <p>
-        I <strong>{{ student.last_name }}, {{ student.first_name }}</strong> would like to request a reservation for <strong>{{ room.name }}</strong> on <strong>{{ reservation.date|date:"F j, Y" }}</strong> from <strong>{{ reservation.start_time }}</strong> to <strong>{{ reservation.end_time }}</strong>.
+        I <strong>{{ student.last_name }}, {{ student.first_name }}</strong> would like to request a reservation for <strong>{{ room.name }}</strong> on <strong>{{ reservation.date|date:"F"|lower }} {{ reservation.date|date:"j, Y" }}</strong> from <strong>{{ reservation.start_time|time:"g:i A" }}</strong> to <strong>{{ reservation.end_time|time:"g:i A" }}</strong>.
         The purpose of using the room is for <strong>{{ reservation.reason }}</strong>.
     </p>
 
