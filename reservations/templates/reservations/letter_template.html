@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Room Reservation Letter</title>
+    <style>
+        body { font-family: "Times New Roman", serif; margin: 40px; line-height: 1.4; }
+        header { text-align:center; margin-bottom: 20px; }
+        .meta { margin-bottom: 15px; }
+        .signature { margin-top: 40px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h2>Official Room Reservation Letter</h2>
+        <div>{{ room.campus.name }} — {{ room.name }}</div>
+    </header>
+
+    <div class="meta">
+        <div><strong>Date:</strong> {{ now|date:"F j, Y" }}</div>
+        <div><strong>To:</strong> Room Administrator — {{ room.name }}</div>
+    </div>
+
+    <p>Dear Sir / Madam,</p>
+
+    <p>
+        I, <strong>{{ student.get_full_name|default:student.username }}</strong>,
+        would like to request the use of the <strong>{{ room.name }}</strong>
+        on <strong>{{ reservation.date|date:"F j, Y" }}</strong> from
+        <strong>{{ reservation.start_time }}</strong> to <strong>{{ reservation.end_time }}</strong>.
+    </p>
+
+    {% if reservation.reason %}
+    <p><strong>Reason:</strong> {{ reservation.reason }}</p>
+    {% endif %}
+
+    <p>Thank you for your kind consideration.</p>
+
+    <div class="signature">
+        <p>Sincerely,</p>
+        <p><strong>{{ student.get_full_name|default:student.username }}</strong></p>
+    </div>
+</body>
+</html>

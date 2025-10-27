@@ -5,6 +5,27 @@ from django.contrib import messages
 from reservations.models import Reservation
 from rooms.models import Room
 from users.models import UserProfile
+import tempfile
+from django.template.loader import render_to_string
+from django.core.files.base import ContentFile
+from django.utils import timezone
+
+try:
+    from weasyprint import HTML
+    PDF_LIB = 'weasyprint'
+except (ImportError, OSError):
+    HTML = None
+    try:
+        from reportlab.pdfgen import canvas
+        from reportlab.lib.pagesizes import letter
+        from reportlab.lib.styles import getSampleStyleSheet
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+        from io import BytesIO
+        from django.utils.html import strip_tags
+        PDF_LIB = 'reportlab'
+    except ImportError:
+        PDF_LIB = None
+
 
 @login_required(login_url='student_login')
 def book_room(request):
@@ -31,15 +52,71 @@ def book_room(request):
             if conflicts.exists():
                 messages.error(request, 'This time slot is already booked. Please choose another time.')
                 return redirect('book_room')
-            
+
+            reason = request.POST.get('reason', '').strip()
+
             reservation = Reservation.objects.create(
                 student=request.user,
                 room=room,
                 date=date,
                 start_time=start_time,
                 end_time=end_time,
+                reason=reason,
                 status='pending'
             )
+            
+            try:
+                html_content = render_to_string('reservations/letter_template.html', {
+                    'reservation': reservation,
+                    'student': request.user,
+                    'room': room,
+                    'now': timezone.now(),
+                })
+
+                if PDF_LIB == 'weasyprint':
+                    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+                        try:
+                            HTML(string=html_content).write_pdf(tmp.name)
+                            tmp.seek(0)
+                            reservation.letter_file.save(
+                                f"reservation_letter_{reservation.id}.pdf",
+                                ContentFile(tmp.read()),
+                                save=False
+                            )
+                        finally:
+                            # Clean up the temporary file
+                            import os
+                            try:
+                                os.unlink(tmp.name)
+                            except:
+                                pass
+                elif PDF_LIB == 'reportlab':
+                    buffer = BytesIO()
+                    doc = SimpleDocTemplate(buffer, pagesize=letter)
+                    styles = getSampleStyleSheet()
+                    story = []
+
+                    # Convert HTML to plain text
+                    text_content = strip_tags(html_content)
+                    story.append(Paragraph(text_content, styles['Normal']))
+                    doc.build(story)
+
+                    buffer.seek(0)
+                    reservation.letter_file.save(
+                        f"reservation_letter_{reservation.id}.pdf",
+                        ContentFile(buffer.read()),
+                        save=False
+                    )
+                else:
+                    raise Exception("No PDF library available")
+
+                reservation.letter_generated_at = timezone.now()
+                reservation.save()
+            except Exception as e:
+                # log or message if you want — don't stop the reservation creation
+                messages.warning(request, f"Reservation created but letter generation failed: {str(e)}")
+                
+
             messages.success(request, 'Room booked successfully! Waiting for admin approval.')
             return redirect('student_reservations')
         except Room.DoesNotExist:
@@ -113,19 +190,24 @@ def manage_reservations(request):
 def approve_reservation(request, reservation_id):
     user_profile = request.user.profile
     reservation = get_object_or_404(Reservation, id=reservation_id)
-    
+
     # Superadmins cannot approve
     if user_profile.role == 'superadmin':
         messages.error(request, 'Superadmins cannot approve or reject reservations.')
         return redirect('manage_reservations')
-    
+
     # Check permission
     if reservation.room.admin_type != user_profile.admin_type:
         return HttpResponseForbidden("Access denied")
-    
+
     reservation.status = 'approved'
     reservation.rejection_note = None
     reservation.save()
+
+    # Send email notification
+    from .utils import send_reservation_notification
+    send_reservation_notification(reservation, 'approved')
+
     messages.success(request, f'Reservation for {reservation.student.username} approved!')
     return redirect('manage_reservations')
 
@@ -133,23 +215,28 @@ def approve_reservation(request, reservation_id):
 def reject_reservation(request, reservation_id):
     user_profile = request.user.profile
     reservation = get_object_or_404(Reservation, id=reservation_id)
-    
+
     # Superadmins cannot reject
     if user_profile.role == 'superadmin':
         messages.error(request, 'Superadmins cannot approve or reject reservations.')
         return redirect('manage_reservations')
-    
+
     # Check permission
     if reservation.room.admin_type != user_profile.admin_type:
         return HttpResponseForbidden("Access denied")
-    
+
     if request.method == 'POST':
         rejection_note = request.POST.get('rejection_note', '')
         reservation.status = 'rejected'
         reservation.rejection_note = rejection_note
         reservation.save()
+
+        # Send email notification
+        from .utils import send_reservation_notification
+        send_reservation_notification(reservation, 'rejected')
+
         messages.success(request, f'Reservation rejected.')
         return redirect('manage_reservations')
-    
+
     context = {'reservation': reservation}
     return render(request, 'reservations/reject_reservation.html', context)
