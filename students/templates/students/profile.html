@@ -6,7 +6,7 @@
   <style>
     body{font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif;background:#f5f5f5;padding:30px}
     .card{background:#fff;padding:20px;border-radius:8px;max-width:700px;margin:0 auto;box-shadow:0 2px 10px rgba(0,0,0,.05)}
-    .avatar{width:120px;height:120px;border-radius:8px;object-fit:cover;margin-bottom:12px}
+    .avatar{width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:12px}
     .row{margin-bottom:12px}
     .label{font-weight:700;color:#333;margin-bottom:6px;display:block}
     .value{color:#555}
@@ -40,7 +40,8 @@
 
     <div class="row actions">
       <a href="{% url 'students:edit_profile' %}" class="btn">Edit Profile</a>
-      <a href="/" class="btn btn-secondary">Back</a>
+      <a href="{% url 'accounts:profile_photo' %}" class="btn">Upload Photo</a>
+      <a href="{% url 'users:student_dashboard' %}" class="btn btn-secondary">Back</a>
     </div>
   </div>
 </body>

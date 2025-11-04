@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Settings</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f5f5f5; padding:30px;}
+        .card { background:#fff; padding:20px; border-radius:8px; max-width:500px; margin:0 auto; box-shadow:0 2px 10px rgba(0,0,0,.05);}
+        .actions { display:flex; flex-direction:column; gap:10px; margin-top:20px;}
+        .btn { padding:12px 16px; border:none; background:#545454; color:#fff; border-radius:6px; text-decoration:none; text-align:center;}
+        .btn:hover { background:#b4b4b4; color:#000;}
+        .btn-danger { background:#dc3545;}
+        .btn-danger:hover { background:#c82333;}
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>Settings</h2>
+    <a href="{% url 'users:student_dashboard' %}" class="btn" style="padding:8px 12px; font-size:14px; width:auto; display:inline-block;">Back to Dashboard</a>
+
+    <div class="actions">
+        <a href="{% url 'users:change_password' %}" class="btn">Change Password</a>
+        <a href="{% url 'users:logout' %}" class="btn btn-danger">Logout</a>
+    </div>
+</div>
+</body>
+</html>

@@ -18,7 +18,7 @@ def student_login(request):
     if request.user.is_authenticated:
         profile = request.user.profile
         if profile.role == 'student':
-            return redirect('student_dashboard')
+            return redirect('users:student_dashboard')
         elif profile.role in ['admin', 'superadmin']:
             return redirect('admin_dashboard')
     
@@ -39,7 +39,7 @@ def student_login(request):
                 if profile.role == 'student':
                     login(request, user)
                     messages.success(request, f'Welcome back, {user.username}!')
-                    return redirect('student_dashboard')
+                    return redirect('users:student_dashboard')
                 else:
                     messages.error(request, 'This account is not a student account. Please use admin login.')
             else:
@@ -53,15 +53,11 @@ def student_register(request):
     if request.user.is_authenticated:
         profile = request.user.profile
         if profile.role == 'student':
-            return redirect('student_dashboard')
+            return redirect('users:student_dashboard')
         elif profile.role in ['admin', 'superadmin']:
             return redirect('admin_dashboard')
 
     if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        student_number = request.POST.get('student_number')
-        department = request.POST.get('department')
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -125,16 +121,6 @@ def student_register(request):
                 verification_code=verification_code
             )
 
-            # Create student profile
-            from users.models import Student
-            Student.objects.create(
-                user=user,
-                first_name=first_name,
-                last_name=last_name,
-                student_number=student_number,
-                department=department
-            )
-
             # Send verification email
             from django.core.mail import send_mail
             send_mail(
@@ -195,14 +181,14 @@ def admin_login(request):
 def logout_view(request):
     user_profile = request.user.profile if request.user.is_authenticated else None
     logout(request)
-    
+
     # Redirect based on user role
     if user_profile and user_profile.role in ['admin', 'superadmin']:
-        return redirect('admin_login')
+        return redirect('users:admin_login')
     else:
-        return redirect('student_login')
+        return redirect('users:student_login')
 
-@login_required(login_url='student_login')
+@login_required(login_url='users:student_login')
 def student_dashboard(request):
     reservations = request.user.reservations.all()
     
@@ -228,7 +214,7 @@ def forgot_password(request):
     if request.user.is_authenticated:
         profile = request.user.profile
         if profile.role == 'student':
-            return redirect('student_dashboard')
+            return redirect('users:student_dashboard')
         elif profile.role in ['admin', 'superadmin']:
             return redirect('admin_dashboard')
     
@@ -312,12 +298,12 @@ def reset_password(request):
     
     if not reset_user_id:
         messages.error(request, 'Session expired. Please start over.')
-        return redirect('student_login')
-    
+        return redirect('users:student_login')
+
     try:
         user = User.objects.get(id=reset_user_id)
     except User.DoesNotExist:
-        return redirect('student_login')
+        return redirect('users:student_login')
     
     if request.method == 'POST':
         password = request.POST.get('password')
@@ -345,7 +331,7 @@ def reset_password(request):
             del request.session['reset_user_id']
         
         messages.success(request, 'Password reset successful! Please log in with your new password.')
-        return redirect('student_login')
+        return redirect('users:student_login')
     
     context = {'email': user.email}
     return render(request, 'users/reset_password.html', context)
@@ -371,6 +357,10 @@ def edit_profile(request):
     context = {'u_form': u_form, 'p_form': p_form}
     return render(request, 'students/edit_profile.html', context)
 
+@login_required(login_url='users:student_login')
+def settings(request):
+    return render(request, 'students/settings.html')
+
 def verify_email(request):
     pending_email = request.session.get('pending_email')
     if not pending_email:
@@ -390,7 +380,7 @@ def verify_email(request):
 
                 messages.success(request, 'Email verified successfully! You can now log in.')
                 del request.session['pending_email']
-                return redirect('student_login')
+                return redirect('users:student_login')
             else:
                 messages.error(request, 'Invalid verification code. Please try again.')
         except User.DoesNotExist:

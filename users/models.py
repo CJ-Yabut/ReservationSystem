@@ -44,25 +44,8 @@ class PasswordResetToken(models.Model):
     
 
 class Student(models.Model):
-    DEPARTMENT_CHOICES = [
-        ('Architecture', 'Architecture'),
-        ('Chemical Engineer', 'Chemical Engineer'),
-        ('Civil Engineer', 'Civil Engineer'),
-        ('Computer Engineer', 'Computer Engineer'),
-        ('Computer Science', 'Computer Science'),
-        ('Electrical Engineer', 'Electrical Engineer'),
-        ('Electronic Engineer', 'Electronic Engineer'),
-        ('Industrial Engineer', 'Industrial Engineer'),
-        ('Information Technology', 'Information Technology'),
-        ('Mechanical Engineer', 'Mechanical Engineer'),
-    ]
-
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    student_number = models.CharField(max_length=20, unique=True, blank=True, null=True)
-    department = models.CharField(max_length=50, choices=DEPARTMENT_CHOICES)
     profile_picture = models.FileField(upload_to='avatars/', blank=True, null=True)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} ({self.user.username})"
+        return self.user.username

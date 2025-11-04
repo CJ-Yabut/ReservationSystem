@@ -1,7 +1,5 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
 from django.http import HttpResponseForbidden
 from django.contrib import messages
 from django.db import OperationalError
@@ -27,21 +25,14 @@ def edit_profile(request):
         return redirect('/')
     if request.method == 'POST':
         form = EditProfileForm(request.POST, request.FILES, instance=profile, user=request.user)
-        pw_form = PasswordChangeForm(request.user, request.POST)
         if 'save_profile' in request.POST and form.is_valid():
             form.save()
             return redirect('students:edit_profile')
-        if 'change_password' in request.POST and pw_form.is_valid():
-            user = pw_form.save()
-            update_session_auth_hash(request, user)
-            return redirect('students:edit_profile')
     else:
         form = EditProfileForm(instance=profile, user=request.user)
-        pw_form = PasswordChangeForm(request.user)
 
     return render(request, 'students/edit_profile.html', {
         'form': form,
-        'pw_form': pw_form,
         'profile': profile,
     })
 

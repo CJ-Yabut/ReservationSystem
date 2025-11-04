@@ -1,0 +1,8 @@
+- [x] Remove "Edit Profile" link from student dashboard navbar
+- [x] Update "Back" links in edit_profile.html to link to profile instead of home
+- [x] Implement real-time notifications for reservation status updates using WebSockets
+- [x] Add WebSocket consumer for notifications
+- [x] Configure ASGI application for WebSocket support
+- [x] Update reservation approval/rejection views to send real-time notifications
+- [x] Update profile and edit profile templates to link back to dashboard
+- [x] Fix URL references in views to use namespaced URLs (e.g., 'users:student_login' instead of 'student_login')

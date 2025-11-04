@@ -140,8 +140,8 @@
     <div class="navbar">
         <h1>Book a Room</h1>
         <div>
-            <a href="{% url 'student_dashboard' %}">Dashboard</a>
-            <a href="{% url 'student_reservations' %}">My Reservations</a>
+            <a href="{% url 'users:student_dashboard' %}">Dashboard</a>
+            <a href="{% url 'reservations:student_reservations' %}">My Reservations</a>
         </div>
     </div>
     
@@ -196,7 +196,7 @@
                 
                 <div class="btn-group">
                     <button type="submit">Book Room</button>
-                    <a href="{% url 'student_dashboard' %}" class="btn btn-cancel">Cancel</a>
+                    <a href="{% url 'users:student_dashboard' %}" class="btn btn-cancel">Cancel</a>
                 </div>
             </form>
         </div>

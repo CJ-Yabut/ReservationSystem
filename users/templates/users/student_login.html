@@ -213,7 +213,7 @@
                 </div>
                 
                 <div class="forgot-password-link">
-                    <a href="{% url 'forgot_password' %}">Forgot Password?</a>
+                    <a href="{% url 'users:forgot_password' %}">Forgot Password?</a>
                 </div>
                 
                 <button type="submit">Login</button>
@@ -221,7 +221,7 @@
             
             <div class="register-section">
                 <p>Don't have an account?</p>
-                <a href="{% url 'student_register' %}"><button type="button" class="register-btn">Register Now</button></a>
+                <a href="{% url 'users:student_register' %}"><button type="button" class="register-btn">Register Now</button></a>
             </div>
             
         </div>

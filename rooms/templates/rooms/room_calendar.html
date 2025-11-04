@@ -246,11 +246,11 @@
 <body>
     <div class="navbar">
         <h1>Room Calendar</h1>
-        <a href="{% url 'book_room' %}">← Back to Booking</a>
+        <a href="{% url 'reservations:book_room' %}">← Back to Booking</a>
     </div>
     
     <div class="container">
-        <a href="{% url 'student_dashboard' %}" class="back-btn">← Back to Dashboard</a>
+        <a href="{% url 'users:student_dashboard' %}" class="back-btn">← Back to Dashboard</a>
         
         <div class="room-info">
             <h2>{{ room.name }}</h2>

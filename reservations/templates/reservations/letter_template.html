@@ -18,33 +18,27 @@
 
     <div class="meta">
         <div><strong>Date:</strong> {{ now|date:"F j, Y" }}</div>
-        <div><strong>To:</strong> {{ room.name }}</div>
+        <div><strong>To:</strong> Room Administrator — {{ room.name }}</div>
     </div>
 
-    <p>Good day!</p>
+    <p>Dear Sir / Madam,</p>
 
     <p>
-        I <strong>{{ student.last_name }}, {{ student.first_name }}</strong> would like to request a reservation for <strong>{{ room.name }}</strong> on <strong>{{ reservation.date|date:"F j, Y" }}</strong> from <strong>{{ reservation.start_time }}</strong> to <strong>{{ reservation.end_time }}</strong>.
-        The purpose of using the room is for <strong>{{ reservation.reason }}</strong>.
+        I, <strong>{{ student.get_full_name|default:student.username }}</strong>,
+        would like to request the use of the <strong>{{ room.name }}</strong>
+        on <strong>{{ reservation.date|date:"F j, Y" }}</strong> from
+        <strong>{{ reservation.start_time }}</strong> to <strong>{{ reservation.end_time }}</strong>.
     </p>
 
-    <p>Here are the details of my request:</p>
-    <ul>
-        <li><strong>Requester Name:</strong> {{ student.first_name }} {{ student.last_name }}</li>
-        <li><strong>Department:</strong> {{ student.get_department_display }}</li>
-        <li><strong>Room Requested:</strong> {{ room.name }}</li>
-        <li><strong>Date & Time:</strong> {{ reservation.date|date:"F j, Y" }}, {{ reservation.start_time }} – {{ reservation.end_time }}</li>
-        <li><strong>Purpose:</strong> {{ reservation.reason }}</li>
-    </ul>
+    {% if reservation.reason %}
+    <p><strong>Reason:</strong> {{ reservation.reason }}</p>
+    {% endif %}
 
-    <p>I kindly request your approval for this reservation. Please let me know if there are any additional requirements or documents needed.</p>
-    <p>Thank you for your time and consideration.</p>
+    <p>Thank you for your kind consideration.</p>
 
     <div class="signature">
         <p>Sincerely,</p>
-        <p><strong>{{ student.first_name }} {{ student.last_name }}</strong></p>
-        <p><strong>{{ student.student_number }}</strong></p>
-        <p><strong>{{ student.user.email }}</strong></p>
+        <p><strong>{{ student.get_full_name|default:student.username }}</strong></p>
     </div>
 </body>
 </html>

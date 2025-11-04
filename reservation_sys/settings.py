@@ -27,6 +27,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Security settings for production (commented out for development)
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+
 
 # Application definition
 
@@ -37,10 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'rooms',
     'reservations',
     'users',
     'students',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +81,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'reservation_sys.wsgi.application'
+
+# Channels
+ASGI_APPLICATION = 'reservation_sys.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 
 # Database
@@ -128,11 +146,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Media settings (add if missing)
 MEDIA_URL = '/media/'
-try:
-    MEDIA_ROOT = BASE_DIR / 'media'
-except Exception:
-    import os
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # Static files settings
 STATICFILES_DIRS = [
@@ -150,3 +165,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'reservationsystem.code@gmail.com'
 EMAIL_HOST_PASSWORD = 'tgtw riyy rnhz hyzp'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Authentication settings
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/login/'
