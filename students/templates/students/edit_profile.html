@@ -41,19 +41,12 @@
 
         <div class="row actions">
             <button type="submit" name="save_profile">Save Profile</button>
-            <a href="/" class="btn-secondary">Back</a>
+            <a href="{% url 'students:profile' %}" class="btn-secondary">Back to Profile</a>
+            <a href="{% url 'accounts:profile_photo' %}" class="btn-secondary">Upload Photo</a>
+            <a href="{% url 'users:student_dashboard' %}" class="btn-secondary">Back to Dashboard</a>
         </div>
 
-        <hr>
 
-        <h3>Change Password</h3>
-        <div class="row">
-            {{ pw_form.as_p }}
-        </div>
-        <div class="row actions">
-            <button type="submit" name="change_password">Change Password</button>
-            <a href="/" class="btn-secondary">Back</a>
-        </div>
     </form>
 </div>
 </body>

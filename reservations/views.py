@@ -9,6 +9,8 @@ import tempfile
 from django.template.loader import render_to_string
 from django.core.files.base import ContentFile
 from django.utils import timezone
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 try:
     from weasyprint import HTML
@@ -27,7 +29,7 @@ except (ImportError, OSError):
         PDF_LIB = None
 
 
-@login_required(login_url='student_login')
+@login_required(login_url='users:student_login')
 def book_room(request):
     if request.method == 'POST':
         room_id = request.POST.get('room')
@@ -128,13 +130,13 @@ def book_room(request):
     context = {'rooms': rooms}
     return render(request, 'reservations/book_room.html', context)
 
-@login_required(login_url='student_login')
+@login_required(login_url='users:student_login')
 def student_reservations(request):
     reservations = request.user.reservations.all()
     context = {'reservations': reservations}
     return render(request, 'reservations/student_reservations.html', context)
 
-@login_required(login_url='student_login')
+@login_required(login_url='users:student_login')
 def cancel_reservation(request, reservation_id):
     reservation = get_object_or_404(Reservation, id=reservation_id)
     
@@ -204,6 +206,18 @@ def approve_reservation(request, reservation_id):
     reservation.rejection_note = None
     reservation.save()
 
+    # Send real-time notification
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f'notifications_{reservation.student.id}',
+        {
+            'type': 'send_notification',
+            'message': f'Your reservation for {reservation.room.name} on {reservation.date} has been approved!',
+            'reservation_id': reservation.id,
+            'status': 'approved'
+        }
+    )
+
     # Send email notification
     from .utils import send_reservation_notification
     send_reservation_notification(reservation, 'approved')
@@ -230,6 +244,18 @@ def reject_reservation(request, reservation_id):
         reservation.status = 'rejected'
         reservation.rejection_note = rejection_note
         reservation.save()
+
+        # Send real-time notification
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f'notifications_{reservation.student.id}',
+            {
+                'type': 'send_notification',
+                'message': f'Your reservation for {reservation.room.name} on {reservation.date} has been rejected.',
+                'reservation_id': reservation.id,
+                'status': 'rejected'
+            }
+        )
 
         # Send email notification
         from .utils import send_reservation_notification

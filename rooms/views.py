@@ -133,7 +133,7 @@ def delete_room(request, room_id):
     context = {'room': room}
     return render(request, 'rooms/delete_room.html', context)
 
-@login_required(login_url='student_login')
+@login_required(login_url='users:student_login')
 @require_http_methods(["GET"])
 def room_calendar(request, room_id):
     """Display calendar view for a specific room"""

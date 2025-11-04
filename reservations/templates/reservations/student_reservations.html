@@ -156,15 +156,15 @@
     <div class="navbar">
         <h1>My Reservations</h1>
         <div>
-            <a href="{% url 'student_dashboard' %}">Dashboard</a>
-            <a href="{% url 'book_room' %}">Book a Room</a>
-            <a href="{% url 'logout' %}">Logout</a>
+            <a href="{% url 'users:student_dashboard' %}">Dashboard</a>
+            <a href="{% url 'reservations:book_room' %}">Book a Room</a>
+            <a href="{% url 'users:logout' %}">Logout</a>
         </div>
     </div>
     
     <div class="container">
         <h2>All Your Reservations</h2>
-        <a href="{% url 'book_room' %}" class="btn">+ Book a New Room</a>
+        <a href="{% url 'reservations:book_room' %}" class="btn">+ Book a New Room</a>
         
         {% if reservations %}
             <div class="table-container">
@@ -189,7 +189,7 @@
                                 <td><span class="status {{ reservation.status }}">{{ reservation.get_status_display }}</span></td>
                                 <td>
                                     {% if reservation.status == 'pending' %}
-                                        <form method="POST" action="{% url 'cancel_reservation' reservation.id %}" style="display: inline;">
+                                        <form method="POST" action="{% url 'reservations:cancel_reservation' reservation.id %}" style="display: inline;">
                                             {% csrf_token %}
                                             <button type="submit" class="action-btn" onclick="return confirm('Cancel this reservation?')">Cancel</button>
                                         </form>
@@ -214,7 +214,7 @@
         {% else %}
             <div class="no-reservations">
                 <p>You have no reservations yet.</p>
-                <p><a href="{% url 'book_room' %}" class="btn">Book a room now</a></p>
+                <p><a href="{% url 'reservations:book_room' %}" class="btn">Book a room now</a></p>
             </div>
         {% endif %}
     </div>

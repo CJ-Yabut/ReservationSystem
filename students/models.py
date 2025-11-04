@@ -7,7 +7,7 @@ class Profile(models.Model):
     # avoid reverse accessor clash with users.UserProfile by using a unique related_name
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
 
-    avatar = models.FileField(upload_to='avatars/', blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username} Profile"

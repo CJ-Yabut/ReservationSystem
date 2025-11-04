@@ -331,7 +331,7 @@
             <div class="user-info">
                 {{ user.username }} ({{ user_profile.get_role_display }})
             </div>
-            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+            <a href="{% url 'users:logout' %}" class="logout-btn">Logout</a>
         </div>
     </div>
     
