@@ -11,11 +11,11 @@ from datetime import datetime, timedelta
 @login_required(login_url='admin_login')
 def admin_dashboard(request):
     user_profile = request.user.profile
-    
+
     # Check if user is admin or superadmin
     if user_profile.role not in ['admin', 'superadmin']:
         return HttpResponseForbidden("Access denied")
-    
+
     # Get rooms based on role
     if user_profile.role == 'superadmin':
         rooms = Room.objects.all()
@@ -23,16 +23,16 @@ def admin_dashboard(request):
     else:  # admin
         rooms = Room.objects.filter(admin_type=user_profile.admin_type)
         reservations = Reservation.objects.filter(room__admin_type=user_profile.admin_type)
-    
+
     # Calculate stats
     pending_count = reservations.filter(status='pending').count()
     approved_count = reservations.filter(status='approved').count()
     rejected_count = reservations.filter(status='rejected').count()
     cancelled_count = reservations.filter(status='cancelled').count()
-    
+
     # Get recent pending reservations (first 5)
     recent_pending = reservations.filter(status='pending')[:5]
-    
+
     context = {
         'user_profile': user_profile,
         'rooms': rooms,
@@ -117,21 +117,45 @@ def edit_room(request, room_id):
 def delete_room(request, room_id):
     user_profile = request.user.profile
     room = get_object_or_404(Room, id=room_id)
-    
+
     # Check permission
     if user_profile.role == 'admin' and room.admin_type != user_profile.admin_type:
         return HttpResponseForbidden("Access denied")
     elif user_profile.role == 'student':
         return HttpResponseForbidden("Access denied")
-    
+
     if request.method == 'POST':
         room_name = room.name
         room.delete()
         messages.success(request, f'Room "{room_name}" deleted successfully!')
         return redirect('admin_dashboard')
-    
+
     context = {'room': room}
     return render(request, 'rooms/delete_room.html', context)
+
+@login_required(login_url='admin_login')
+def approval_codes(request):
+    user_profile = request.user.profile
+
+    # Check if user is admin or superadmin
+    if user_profile.role not in ['admin', 'superadmin']:
+        return HttpResponseForbidden("Access denied")
+
+    # Get approval codes based on role
+    if user_profile.role == 'superadmin':
+        approval_codes = Reservation.objects.filter(status='approved', approval_code__isnull=False).order_by('-letter_generated_at')
+    else:  # admin
+        approval_codes = Reservation.objects.filter(
+            room__admin_type=user_profile.admin_type,
+            status='approved',
+            approval_code__isnull=False
+        ).order_by('-letter_generated_at')
+
+    context = {
+        'user_profile': user_profile,
+        'approval_codes': approval_codes,
+    }
+    return render(request, 'rooms/approval_codes.html', context)
 
 @login_required(login_url='student_login')
 @require_http_methods(["GET"])

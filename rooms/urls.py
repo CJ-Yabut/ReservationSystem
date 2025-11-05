@@ -6,5 +6,6 @@ urlpatterns = [
     path('admin/add-room/', views.add_room, name='add_room'),
     path('admin/edit-room/<int:room_id>/', views.edit_room, name='edit_room'),
     path('admin/delete-room/<int:room_id>/', views.delete_room, name='delete_room'),
+    path('admin/approval-codes/', views.approval_codes, name='approval_codes'),
     path('calendar/<int:room_id>/', views.room_calendar, name='room_calendar'),
 ]

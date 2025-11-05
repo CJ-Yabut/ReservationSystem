@@ -313,6 +313,37 @@
             }
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('code-search');
+            const tableBody = document.getElementById('codes-table-body');
+            const rows = tableBody.getElementsByTagName('tr');
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    const cells = row.getElementsByTagName('td');
+                    let found = false;
+
+                    for (let j = 0; j < cells.length; j++) {
+                        const cellText = cells[j].textContent.toLowerCase();
+                        if (cellText.includes(searchTerm)) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (found) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <!-- Navbar -->
@@ -322,6 +353,7 @@
             <ul class="nav-links">
                 <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
                 <li><a href="{% url 'manage_reservations' %}">Manage Reservations</a></li>
+                <li><a href="{% url 'approval_codes' %}">Approval Codes</a></li>
                 {% if user_profile.role == 'superadmin' %}
                     <li><a href="/admin/panel/">Django Panel</a></li>
                 {% endif %}
@@ -337,15 +369,7 @@
     
     <!-- Main Content -->
     <div class="container">
-        {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+
         
         <!-- Welcome Section -->
         <div class="welcome-section">
@@ -379,6 +403,8 @@
             </div>
         </div>
         
+
+
         <!-- Grouped Rooms by Campus -->
         <div class="rooms-section">
             <h3 class="section-title">Assigned Facility</h3>

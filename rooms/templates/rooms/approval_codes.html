@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approval Codes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:  #545454 100%;
+            color: #ffffff;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #545454;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ffffff;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .navbar-brand {
+            color: rgb(255, 255, 255);
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: #ffffff;
+            color: #545454;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            color: #ffffff;
+            font-size: 13px;
+        }
+
+        .logout-btn {
+            background: #545454;
+            color: #ffffff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ffffff;
+            color: #545454;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-section h2 {
+            color: #545454;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .welcome-section p {
+            color: #b4b4b4;
+            margin-bottom: 20px;
+        }
+
+        /* Section Title */
+        .section-title {
+            color: #ffffff;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 1px;
+        }
+
+        /* Codes Search */
+        .codes-search {
+            margin-bottom: 20px;
+        }
+
+        .codes-search input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #b4b4b4;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        /* Codes Table Container */
+        .codes-table-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .codes-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .codes-table thead {
+            background: #545454;
+            color: white;
+        }
+
+        .codes-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .codes-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .codes-table tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .approval-code {
+            font-weight: bold;
+            color: #d32f2f;
+            font-size: 16px;
+        }
+
+        .student-name {
+            color: #545454;
+        }
+
+        .facility-name {
+            color: #545454;
+        }
+
+        .date-time {
+            color: #545454;
+        }
+
+        .status-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .issued-date {
+            color: #545454;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #b4b4b4;
+            font-style: italic;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .codes-table {
+                font-size: 12px;
+            }
+
+            .codes-table th,
+            .codes-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('code-search');
+            const tableBody = document.getElementById('codes-table-body');
+            const rows = tableBody.getElementsByTagName('tr');
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    const cells = row.getElementsByTagName('td');
+                    let found = false;
+
+                    for (let j = 0; j < cells.length; j++) {
+                        const cellText = cells[j].textContent.toLowerCase();
+                        if (cellText.includes(searchTerm)) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (found) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="navbar-left">
+            <div class="navbar-brand">RESERVATION SYSTEM</div>
+            <ul class="nav-links">
+                <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'manage_reservations' %}">Manage Reservations</a></li>
+                <li><a href="{% url 'approval_codes' %}">Approval Codes</a></li>
+                {% if user_profile.role == 'superadmin' %}
+                    <li><a href="/admin/panel/">Django Panel</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="navbar-right">
+            <div class="user-info">
+                {{ user.username }} ({{ user_profile.get_role_display }})
+            </div>
+            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h2>Approval Codes Verification</h2>
+            <p>View and manage all issued approval codes for reservations.</p>
+        </div>
+
+        <!-- Approval Codes Section -->
+        <div class="approval-codes-section">
+            <h3 class="section-title">Approval Codes</h3>
+            <div class="codes-search">
+                <input type="text" id="code-search" placeholder="Search approval codes..." style="width: 100%; padding: 10px; border: 2px solid #b4b4b4; border-radius: 5px; margin-bottom: 20px; font-size: 14px;">
+            </div>
+            <div class="codes-table-container">
+                <table class="codes-table">
+                    <thead>
+                        <tr>
+                            <th>Approval Code</th>
+                            <th>Student</th>
+                            <th>Facility</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th>Issued Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="codes-table-body">
+                        {% for reservation in approval_codes %}
+                        <tr>
+                            <td class="approval-code">{{ reservation.approval_code }}</td>
+                            <td class="student-name">{{ reservation.student.get_full_name|default:reservation.student.username }}</td>
+                            <td class="facility-name">{{ reservation.room.name }}</td>
+                            <td class="date-time">{{ reservation.date|date:"M j, Y" }}<br>{{ reservation.start_time }} - {{ reservation.end_time }}</td>
+                            <td><span class="status-badge">{{ reservation.get_status_display }}</span></td>
+                            <td class="issued-date">{{ reservation.letter_generated_at|date:"M j, Y H:i" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="no-data">No approval codes issued yet</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
