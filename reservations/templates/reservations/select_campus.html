@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Campus - Book a Room</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #d9d9d9;
+        }
+
+        .navbar {
+            background: #d9d9d9;
+            color: #000000;
+            padding: 15px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #000000;
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+            margin-top: 2.5px;
+        }
+
+        .navbar-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: rgb(0, 0, 0);
+            text-decoration: none;
+            padding: 8px 15px;
+            background: #d9d9d9;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .navbar a:hover {
+            background: #545454;
+            color:#ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h2 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .campus-card {
+            background: #545454;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .campus-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .campus-image {
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .campus-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .campus-content {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .campus-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .campus-location {
+            color: #ffffff;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .select-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #d9d9d9;
+            color: #000000;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .select-btn:hover {
+            background: #b4b4b4;
+            color: #ffffff;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background: #d9d9d9;
+            color: #000000;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #b4b4b4;
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .header h2 {
+                font-size: 28px;
+            }
+
+            .campus-name {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Choose a campus</h1>
+        <div>
+            <a href="{% url 'student_dashboard' %}">Dashboard</a>
+            <a href="{% url 'student_reservations' %}">My Reservations</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h2>Select Your Campus</h2>
+            <p>Choose the campus where you'd like to book a facility</p>
+        </div>
+
+        <div class="gallery">
+            {% for campus in campuses %}
+                <a href="{% url 'select_facility' campus.id %}" class="campus-card">
+                    <div class="campus-image">
+                        {% if campus.image_url %}
+                            <img src="{{ campus.image_url }}" alt="{{ campus.name }}">
+                        {% endif %}
+                    </div>
+                    <div class="campus-content">
+                        <div class="campus-name">{{ campus.name }}</div>
+                        <div class="campus-location">{{ campus.location }}</div>
+                        <span class="select-btn">Select Campus</span>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center;">
+            <a href="{% url 'student_dashboard' %}" class="back-btn">← Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

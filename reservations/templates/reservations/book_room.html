@@ -3,118 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book a Room</title>
+    <title>Book Facility - {{ facility.name }}</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+            background: #d9d9d9;
         }
-        
+
         .navbar {
-            background: #333;
-            color: white;
-            padding: 15px 20px;
+            background: #d9d9d9;
+            color: #000000;
+            padding: 15px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 3px solid #000000;
         }
-        
+
         .navbar h1 {
             font-size: 24px;
+            margin-top: 2.5px;
         }
-        
+
+        .navbar-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
         .navbar a {
-            color: white;
+            color: rgb(0, 0, 0);
             text-decoration: none;
             padding: 8px 15px;
-            background: #667eea;
+            background: #d9d9d9;
             border-radius: 5px;
-            margin-left: 10px;
+            transition: background 0.3s;
         }
-        
+
+        .navbar a:hover {
+            background: #545454;
+            color:#ffffff;
+        }
+
         .container {
             max-width: 600px;
             margin: 30px auto;
             padding: 20px;
         }
-        
+
+        .facility-info {
+            background: #545454;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .facility-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .facility-details {
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .facility-meta {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .facility-meta span {
+            background: #d9d9d9;
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: #000000;
+        }
+
         .form-container {
-            background: white;
+            background: #545454;
             padding: 30px;
-            border-radius: 10px;
+            border-radius: 15px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         h2 {
-            color: #333;
+            color: #ffffff;
             margin-bottom: 30px;
+            text-align: center;
         }
-        
+
         .messages {
             margin-bottom: 20px;
         }
-        
+
         .alert {
             padding: 12px;
             border-radius: 5px;
             margin-bottom: 10px;
         }
-        
+
         .alert-error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-        
+
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
+            color: #ffffff;
             font-weight: bold;
         }
-        
-        select, input[type="date"], input[type="time"] {
+
+        input[type="date"], input[type="time"], textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 14px;
             transition: border-color 0.3s;
         }
-        
-        select:focus, input:focus {
+
+        input:focus, textarea:focus {
             outline: none;
             border-color: #667eea;
         }
-        
+
         .time-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-        
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
         .btn-group {
             display: flex;
             gap: 10px;
             margin-top: 30px;
         }
-        
+
         button, .btn {
             padding: 12px 20px;
-            background: #667eea;
-            color: white;
+            background: #d9d9d9;
+            color: #000000;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
             text-decoration: none;
@@ -122,61 +177,82 @@
             flex: 1;
             text-align: center;
         }
-        
+
         button:hover, .btn:hover {
-            background: #764ba2;
+            background: #b4b4b4;
+            color: #ffffff;
         }
-        
+
         .btn-cancel {
             background: #999;
         }
-        
+
         .btn-cancel:hover {
             background: #777;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #d9d9d9;
+            color: #000000;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #b4b4b4;
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <h1>Book a Room</h1>
+        <h1>Book a Facility</h1>
         <div>
             <a href="{% url 'student_dashboard' %}">Dashboard</a>
             <a href="{% url 'student_reservations' %}">My Reservations</a>
         </div>
     </div>
-    
+
     <div class="container">
+        <div class="facility-info">
+            <div class="facility-name">{{ facility.name }}</div>
+            <div class="facility-details">
+                {% if facility.description %}
+                    {{ facility.description }}
+                {% else %}
+                    Facility at {{ facility.campus.name }}
+                {% endif %}
+            </div>
+            <div class="facility-meta">
+                <span>{{ facility.campus.name }}</span>
+                <span>Capacity: {{ facility.capacity }}</span>
+            </div>
+        </div>
+
         <div class="form-container">
-            <h2>Book a Room</h2>
-            
+            <h2>Booking Details</h2>
+
             {% if messages %}
-                <div class="messages">
-                    {% for message in messages %}
-                        <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
             {% endif %}
-            
+
             <form method="POST">
                 {% csrf_token %}
-                
-                <div class="form-group">
-                    <label for="room">Select Room *</label>
-                    <select id="room" name="room" required>
-                        <option value="">-- Choose a room --</option>
-                        {% for room in rooms %}
-                            <option value="{{ room.id }}">{{ room.campus.name }} - {{ room.name }} (Capacity: {{ room.capacity }})</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
+
                 <div class="form-group">
                     <label for="date">Date *</label>
                     <input type="date" id="date" name="date" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label>Time *</label>
                     <div class="time-group">
@@ -189,16 +265,22 @@
                             <input type="time" id="end_time" name="end_time" required>
                         </div>
                     </div>
-                <div class="form-row">
-                             <label for="reason" style="font-size: 12px;">Reason</label>
-                             <textarea id="reason" name="reason" rows="3" placeholder="Reason for reservation (e.g., practice, event, meeting)"></textarea>
                 </div>
-                
+
+                <div class="form-group">
+                    <label for="reason">Reason for Reservation</label>
+                    <textarea id="reason" name="reason" rows="3" placeholder="Please provide details about your reservation (e.g., practice, event, meeting)"></textarea>
+                </div>
+
                 <div class="btn-group">
-                    <button type="submit">Book Room</button>
-                    <a href="{% url 'student_dashboard' %}" class="btn btn-cancel">Cancel</a>
+                    <button type="submit">Book Facility</button>
+                    <a href="{% url 'select_facility' facility.campus.id %}" class="btn btn-cancel">Choose Different Facility</a>
                 </div>
             </form>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="{% url 'select_campus' %}" class="back-btn">← Start Over</a>
         </div>
     </div>
 </body>

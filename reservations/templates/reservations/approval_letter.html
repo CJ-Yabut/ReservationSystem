@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Room Reservation Approval Letter</title>
+    <style>
+        body {
+            /* Gray background for the whole page */
+            background-color: #f0f0f0;
+            font-family: "Times New Roman", serif;
+            margin: 0;
+            padding: 10px; /* Reduced padding */
+        }
+
+        .letter-container {
+            /* This is the white "page" */
+            max-width: 800px;
+            margin: 10px auto; /* Reduced margin */
+            background: #ffffff;
+            padding: 40px; /* Reduced padding */
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            line-height: 1.4; /* Reduced line height */
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px; /* Reduced margin */
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 22px; /* Slightly reduced */
+        }
+        header h2 {
+            margin: 5px 0 0 0;
+            font-size: 16px; /* Slightly reduced */
+            font-weight: normal;
+        }
+
+        .meta {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .details-box {
+            margin: 20px 0; /* Reduced margin */
+            padding: 15px; /* Reduced padding */
+            background-color: #f9f9f9;
+            border-left: 4px solid #333;
+        }
+        .details-box h3 {
+            margin-top: 0;
+        }
+        .details-box p {
+            margin: 4px 0; /* Reduced margin */
+        }
+
+        .signature {
+            margin-top: 25px; /* Reduced margin */
+        }
+        
+        .signature p {
+            margin: 2px 0; /* Tighten up signature block */
+        }
+
+        .footer {
+            margin-top: 25px; /* Reduced margin */
+            padding-top: 15px; /* Reduced padding */
+            border-top: 1px solid #ccc;
+            font-size: 11px; /* Slightly reduced */
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="letter-container">
+        <header>
+            <h1>{{ room.campus.name }}</h1>
+            <h2>OFFICIAL ROOM RESERVATION APPROVAL</h2>
+        </header>
+
+        <div class="meta">
+            <div><strong>Date Issued:</strong> {{ now|date:"F j, Y" }}</div>
+            <div><strong>Reference Number:</strong> {{ reservation.id }}</div>
+        </div>
+
+        <p>Good day!</p>
+
+        <p>This is to inform you that your request to reserve <strong>{{ room.name }}</strong> on <strong>{{ reservation.date|date:"F j, Y" }}</strong> from <strong>{{ reservation.start_time|time:"g:i A" }}</strong> to <strong>{{ reservation.end_time|time:"g:i A" }}</strong> has been approved.</p>
+        
+        <p>
+            <strong>Your Approval Code:</strong> 
+            <span style="color: #2e7d32; font-weight: bold; font-size: 1.2em;">
+                {{ reservation.approval_code }}
+            </span>
+        </p>
+
+        <p>Below are the details of your approved reservation:</p>
+
+        <div class="details-box">
+            <h3>RESERVATION DETAILS</h3>
+            
+            <p><strong>Requester Name:</strong> {{ student.first_name }} {{ student.last_name }}</p>
+            <p><strong>Department:</strong> {{ student.get_department_display }}</p>
+            <p><strong>Room Reserved:</strong> {{ room.name }} ({{ room.campus.name }})</p>
+            <p><strong>Date & Time:</strong> {{ reservation.date|date:"l, F j, Y" }}, {{ reservation.start_time|time:"g:i A" }} to {{ reservation.end_time|time:"g:i A" }}</p>
+            <p><strong>Purpose:</strong> {{ reservation.reason }}</p>
+        </div>
+
+        <p>Please ensure proper use and cleanliness of the room during and after your activity. Should there be any changes in the schedule or additional requirements, kindly inform us ahead of time.</p>
+
+        <p>Thank you and have a productive event.</p>
+
+        <div class="signature">
+            <p>Sincerely,</p>
+            <p style="margin-top: 25px;"><strong>_______________________________</strong></p>
+            <p><strong>Room Reservation Administrator</strong></p>
+            <p><strong>{{ room.campus.name }}</strong></p>
+            <p><strong>Date: {{ now|date:"F j, Y" }}</strong></p>
+        </div>
+
+</body>
+</html>

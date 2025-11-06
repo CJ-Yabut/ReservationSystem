@@ -1,4 +1,3 @@
-# reservations/models.py
 from django.db import models
 from django.contrib.auth.models import User
 from rooms.models import Room
@@ -34,6 +33,9 @@ class Reservation(models.Model):
     # generated letter file and timestamp
     letter_file = models.FileField(upload_to=reservation_letter_upload_path, null=True, blank=True)
     letter_generated_at = models.DateTimeField(null=True, blank=True)
+
+    # approval code for verification (8 characters: APPRXXXX)
+    approval_code = models.CharField(max_length=8, unique=True, null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

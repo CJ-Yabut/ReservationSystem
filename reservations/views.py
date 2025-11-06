@@ -28,9 +28,42 @@ except (ImportError, OSError):
 
 
 @login_required(login_url='student_login')
+def select_campus(request):
+    """Step 1: Campus Selection"""
+    from rooms.models import Campus
+    campuses = Campus.objects.all()
+    context = {'campuses': campuses}
+    return render(request, 'reservations/select_campus.html', context)
+
+@login_required(login_url='student_login')
+def select_facility(request, campus_id):
+    """Step 2: Facility Selection"""
+    from rooms.models import Campus
+    try:
+        campus = Campus.objects.get(id=campus_id)
+        facilities = Room.objects.filter(campus=campus)
+        context = {'campus': campus, 'facilities': facilities}
+        return render(request, 'reservations/select_facility.html', context)
+    except Campus.DoesNotExist:
+        messages.error(request, 'Campus not found.')
+        return redirect('select_campus')
+
+@login_required(login_url='student_login')
 def book_room(request):
+    """Step 3: Booking Form"""
+    # Check if facility is selected via GET parameter
+    facility_id = request.GET.get('facility')
+    if not facility_id:
+        messages.error(request, 'Please select a facility first.')
+        return redirect('select_campus')
+
+    try:
+        facility = Room.objects.get(id=facility_id)
+    except Room.DoesNotExist:
+        messages.error(request, 'Facility not found.')
+        return redirect('select_campus')
+
     if request.method == 'POST':
-        room_id = request.POST.get('room')
         date_str = request.POST.get('date')
         start_time_str = request.POST.get('start_time')
         end_time_str = request.POST.get('end_time')
@@ -42,14 +75,12 @@ def book_room(request):
             end_time = datetime.strptime(end_time_str, '%H:%M').time()
         except ValueError:
             messages.error(request, 'Invalid date or time format.')
-            return redirect('book_room')
-        
+            return redirect(request.get_full_path())
+
         try:
-            room = Room.objects.get(id=room_id)
-            
             # Check for conflicts
             conflicts = Reservation.objects.filter(
-                room=room,
+                room=facility,
                 date=date,
                 status__in=['approved', 'pending']
             ).exclude(
@@ -57,28 +88,28 @@ def book_room(request):
             ).exclude(
                 start_time__gte=end_time
             )
-            
+
             if conflicts.exists():
-                messages.error(request, 'This time slot is already booked. Please choose another time.')
-                return redirect('book_room')
+                messages.error(request, 'The selected date and time is already reserved. Please choose another date and time.')
+                return redirect(request.get_full_path())
 
             reason = request.POST.get('reason', '').strip()
 
             reservation = Reservation.objects.create(
                 student=request.user,
-                room=room,
+                room=facility,
                 date=date,
                 start_time=start_time,
                 end_time=end_time,
                 reason=reason,
                 status='pending'
             )
-            
+
             try:
                 html_content = render_to_string('reservations/letter_template.html', {
                     'reservation': reservation,
                     'student': request.user.student,
-                    'room': room,
+                    'room': facility,
                     'now': timezone.now(),
                 })
 
@@ -124,17 +155,13 @@ def book_room(request):
             except Exception as e:
                 # log or message if you want — don't stop the reservation creation
                 messages.warning(request, f"Reservation created but letter generation failed: {str(e)}")
-                
 
             messages.success(request, 'Room booked successfully! Waiting for admin approval.')
             return redirect('student_reservations')
-        except Room.DoesNotExist:
-            messages.error(request, 'Room not found.')
         except Exception as e:
             messages.error(request, f'Error booking room: {str(e)}')
-    
-    rooms = Room.objects.all()
-    context = {'rooms': rooms}
+
+    context = {'facility': facility}
     return render(request, 'reservations/book_room.html', context)
 
 @login_required(login_url='student_login')
@@ -211,13 +238,69 @@ def approve_reservation(request, reservation_id):
 
     reservation.status = 'approved'
     reservation.rejection_note = None
+
+    # Generate unique approval code
+    from .utils import generate_approval_code
+    reservation.approval_code = generate_approval_code()
+
     reservation.save()
 
-    # Send email notification
-    from .utils import send_reservation_notification
-    send_reservation_notification(reservation, 'approved')
+    # Generate approval letter PDF with the code
+    try:
+        html_content = render_to_string('reservations/approval_letter.html', {
+            'reservation': reservation,
+            'student': reservation.student.student,
+            'room': reservation.room,
+            'now': timezone.now(),
+        })
 
-    messages.success(request, f'Reservation for {reservation.student.username} approved!')
+        if PDF_LIB == 'weasyprint':
+            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+                try:
+                    HTML(string=html_content).write_pdf(tmp.name)
+                    tmp.seek(0)
+                    reservation.letter_file.save(
+                        f"approval_letter_{reservation.id}.pdf",
+                        ContentFile(tmp.read()),
+                        save=False
+                    )
+                finally:
+                    # Clean up the temporary file
+                    import os
+                    try:
+                        os.unlink(tmp.name)
+                    except:
+                        pass
+        elif PDF_LIB == 'reportlab':
+            buffer = BytesIO()
+            doc = SimpleDocTemplate(buffer, pagesize=letter)
+            styles = getSampleStyleSheet()
+            story = []
+
+            # Convert HTML to plain text
+            text_content = strip_tags(html_content)
+            story.append(Paragraph(text_content, styles['Normal']))
+            doc.build(story)
+
+            buffer.seek(0)
+            reservation.letter_file.save(
+                f"approval_letter_{reservation.id}.pdf",
+                ContentFile(buffer.read()),
+                save=False
+            )
+        else:
+            raise Exception("No PDF library available")
+
+        reservation.letter_generated_at = timezone.now()
+        reservation.save()
+    except Exception as e:
+        messages.warning(request, f'Reservation approved but letter generation failed: {str(e)}')
+
+    # Send email notification with PDF attachment
+    from .utils import send_reservation_notification_with_attachment
+    send_reservation_notification_with_attachment(reservation, 'approved')
+
+    messages.success(request, f'Reservation for {reservation.student.username} approved! Approval code: {reservation.approval_code}')
     return redirect('manage_reservations')
 
 @login_required(login_url='admin_login')

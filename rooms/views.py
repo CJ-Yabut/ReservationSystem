@@ -7,31 +7,32 @@ from reservations.models import Reservation
 from users.models import UserProfile
 from django.views.decorators.http import require_http_methods
 from datetime import datetime, timedelta
+from django.utils import timezone # Import timezone
 
 @login_required(login_url='admin_login')
 def admin_dashboard(request):
     user_profile = request.user.profile
 
-    # Check if user is admin or superadmin
     if user_profile.role not in ['admin', 'superadmin']:
         return HttpResponseForbidden("Access denied")
 
-    # Get rooms based on role
     if user_profile.role == 'superadmin':
         rooms = Room.objects.all()
         reservations = Reservation.objects.all()
-    else:  # admin
+    else: # admin
         rooms = Room.objects.filter(admin_type=user_profile.admin_type)
         reservations = Reservation.objects.filter(room__admin_type=user_profile.admin_type)
 
-    # Calculate stats
     pending_count = reservations.filter(status='pending').count()
     approved_count = reservations.filter(status='approved').count()
     rejected_count = reservations.filter(status='rejected').count()
     cancelled_count = reservations.filter(status='cancelled').count()
 
-    # Get recent pending reservations (first 5)
-    recent_pending = reservations.filter(status='pending')[:5]
+    # Get recent pending reservations (this will be our activity feed)
+    recent_pending_activities = reservations.filter(status='pending')[:5]
+
+    # Get today's reservations (ordered by start time)
+    todays_reservations = reservations.filter(date=timezone.localdate(timezone.now()), status='approved').order_by('start_time')
 
     context = {
         'user_profile': user_profile,
@@ -41,7 +42,8 @@ def admin_dashboard(request):
         'approved_count': approved_count,
         'rejected_count': rejected_count,
         'cancelled_count': cancelled_count,
-        'recent_pending': recent_pending,
+        'todays_reservations': todays_reservations,        # Used for "Today's Bookings"
+        'recent_pending_activities': recent_pending_activities, # Used for "Recent Activity"
         'total_reservations': reservations.count(),
     }
     return render(request, 'rooms/admin_dashboard.html', context)
@@ -50,7 +52,6 @@ def admin_dashboard(request):
 def add_room(request):
     user_profile = request.user.profile
     
-    # Only regular admins can add rooms
     if user_profile.role != 'admin':
         return HttpResponseForbidden("Only admins can add rooms")
     
@@ -85,7 +86,6 @@ def edit_room(request, room_id):
     user_profile = request.user.profile
     room = get_object_or_404(Room, id=room_id)
     
-    # Check permission
     if user_profile.role == 'admin' and room.admin_type != user_profile.admin_type:
         return HttpResponseForbidden("Access denied")
     elif user_profile.role == 'student':
@@ -118,7 +118,6 @@ def delete_room(request, room_id):
     user_profile = request.user.profile
     room = get_object_or_404(Room, id=room_id)
 
-    # Check permission
     if user_profile.role == 'admin' and room.admin_type != user_profile.admin_type:
         return HttpResponseForbidden("Access denied")
     elif user_profile.role == 'student':
@@ -137,14 +136,12 @@ def delete_room(request, room_id):
 def approval_codes(request):
     user_profile = request.user.profile
 
-    # Check if user is admin or superadmin
     if user_profile.role not in ['admin', 'superadmin']:
         return HttpResponseForbidden("Access denied")
 
-    # Get approval codes based on role
     if user_profile.role == 'superadmin':
         approval_codes = Reservation.objects.filter(status='approved', approval_code__isnull=False).order_by('-letter_generated_at')
-    else:  # admin
+    else: # admin
         approval_codes = Reservation.objects.filter(
             room__admin_type=user_profile.admin_type,
             status='approved',
@@ -160,27 +157,21 @@ def approval_codes(request):
 @login_required(login_url='student_login')
 @require_http_methods(["GET"])
 def room_calendar(request, room_id):
-    """Display calendar view for a specific room"""
     room = get_object_or_404(Room, id=room_id)
     
-    # Get the month and year from query parameters
     month = int(request.GET.get('month', datetime.now().month))
     year = int(request.GET.get('year', datetime.now().year))
     
-    # Get all reservations for this room
     reservations = Reservation.objects.filter(
         room=room,
         status__in=['approved', 'pending']
     )
     
-    # Create calendar data
     import calendar
     cal = calendar.monthcalendar(year, month)
     
-    # Get day names
     day_names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     
-    # Format reservations by date
     reserved_dates = {}
     for reservation in reservations:
         date_str = str(reservation.date)
@@ -192,7 +183,6 @@ def room_calendar(request, room_id):
             'status': reservation.status,
         })
     
-    # Get previous and next month info
     prev_month = month - 1 if month > 1 else 12
     prev_year = year if month > 1 else year - 1
     next_month = month + 1 if month < 12 else 1
@@ -213,3 +203,29 @@ def room_calendar(request, room_id):
     }
     
     return render(request, 'rooms/room_calendar.html', context)
+
+
+# --- THIS IS THE NEW VIEW YOU MUST ADD ---
+
+@login_required(login_url='admin_login')
+def view_reservation_detail(request, pk):
+    """
+    A simple view to show the details of a single reservation.
+    This is where the "Recent Activity" links will go.
+    """
+    user_profile = request.user.profile
+    if user_profile.role not in ['admin', 'superadmin']:
+        return HttpResponseForbidden("Access denied")
+    
+    reservation = get_object_or_404(Reservation, pk=pk)
+    
+    # Security check: Admin can only see reservations for their AdminType
+    if user_profile.role == 'admin' and reservation.room.admin_type != user_profile.admin_type:
+        messages.error(request, "You do not have permission to view this reservation.")
+        return redirect('admin_dashboard')
+        
+    context = {
+        'reservation': reservation,
+        'user_profile': user_profile
+    }
+    return render(request, 'rooms/view_reservation_detail.html', context)

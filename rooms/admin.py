@@ -3,7 +3,8 @@ from .models import Campus, AdminType, Room
 
 @admin.register(Campus)
 class CampusAdmin(admin.ModelAdmin):
-    list_display = ['name', 'location', 'created_at']
+    list_display = ['name', 'location', 'image_url', 'created_at']
+    fields = ['name', 'location', 'image_url']
     search_fields = ['name', 'location']
     ordering = ['name']
 

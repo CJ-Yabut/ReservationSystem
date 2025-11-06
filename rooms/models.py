@@ -1,9 +1,18 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 
+def campus_image_upload_path(instance, filename):
+    """
+    Generate upload path for campus images.
+    Format: campus_images/{campus_name}/{filename}
+    """
+    campus_name = instance.name.lower().replace(' ', '_')
+    return f"campus_images/{campus_name}/{filename}"
+
 class Campus(models.Model):
     name = models.CharField(max_length=255, unique=True)
     location = models.CharField(max_length=255)
+    image_url = models.URLField(blank=True, null=True, help_text="URL of the campus image from the web")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -29,6 +38,7 @@ class Room(models.Model):
     name = models.CharField(max_length=255)
     capacity = models.IntegerField(validators=[MinValueValidator(1)])
     description = models.TextField(blank=True)
+    image_url = models.URLField(blank=True, null=True, help_text="URL of the room image from the web")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

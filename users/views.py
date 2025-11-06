@@ -38,7 +38,7 @@ def student_login(request):
                     return redirect('verify_email')
                 if profile.role == 'student':
                     login(request, user)
-                    messages.success(request, f'Welcome back, {user.username}!')
+                    messages.success(request, f'Welcome back, {user.first_name} {user.last_name}!')
                     return redirect('student_dashboard')
                 else:
                     messages.error(request, 'This account is not a student account. Please use admin login.')
@@ -62,7 +62,6 @@ def student_register(request):
         last_name = request.POST.get('last_name')
         student_number = request.POST.get('student_number')
         department = request.POST.get('department')
-        username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
@@ -86,7 +85,7 @@ def student_register(request):
                 from django.core.mail import send_mail
                 send_mail(
                     subject='Verify your TIP Reservation Account',
-                    message=f'Hello {existing_user.username},\n\nYour verification code is: {verification_code}\n\nEnter this code to verify your account.',
+                    message=f'Hello {existing_user.first_name} {existing_user.last_name},\n\nYour verification code is: {verification_code}\n\nEnter this code to verify your account.',
                     from_email=None,
                     recipient_list=[email],
                     fail_silently=False,
@@ -98,9 +97,6 @@ def student_register(request):
             else:
                 messages.error(request, 'This email is already registered and verified.')
                 return render(request, 'users/student_register.html')
-        if User.objects.filter(username=username).exists():
-            messages.error(request, 'This username is already taken.')
-            return render(request, 'users/student_register.html')
 
         # Check passwords
         if password != confirm_password:
@@ -111,8 +107,20 @@ def student_register(request):
             return render(request, 'users/student_register.html')
 
         try:
+            # Auto-generate username from email
+            username = email.split('@')[0]
+            # Ensure username is unique
+            base_username = username
+            counter = 1
+            while User.objects.filter(username=username).exists():
+                username = f"{base_username}{counter}"
+                counter += 1
+
             # Create inactive user
             user = User.objects.create_user(username=username, email=email, password=password)
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
 
             # Generate a 6-digit verification code
             verification_code = ''.join(random.choices(string.digits, k=6))
@@ -139,7 +147,7 @@ def student_register(request):
             from django.core.mail import send_mail
             send_mail(
                 subject='Verify your TIP Reservation Account',
-                message=f'Hello {username},\n\nYour verification code is: {verification_code}\n\nEnter this code to verify your account.',
+                message=f'Hello {first_name} {last_name},\n\nYour verification code is: {verification_code}\n\nEnter this code to verify your account.',
                 from_email=None,
                 recipient_list=[email],
                 fail_silently=False,
@@ -177,7 +185,7 @@ def admin_login(request):
                 profile = user.profile
                 if profile.role in ['admin', 'superadmin']:
                     login(request, user)
-                    messages.success(request, f'Welcome, {user.username}!')
+                    messages.success(request, f'Welcome, {user.first_name} {user.last_name}!')
                     return redirect('admin_dashboard')
                 else:
                     messages.error(request, 'This account is not an admin account. Please use student login.')

@@ -365,23 +365,23 @@
     <div class="navbar">
         <h1>Student Dashboard</h1>
         <div class="navbar-right">
-            <span>Welcome, {{ user.username }}</span>
             <a href="{% url 'students:profile' %}">My Profile</a>
             <a href="{% url 'students:edit_profile' %}">Edit Profile</a>
             <a href="{% url 'logout' %}">Logout</a>
         </div>
     </div>
     
+
     <div class="container">
         <div class="welcome">
-            <h2>Welcome, {{ user.first_name|default:user.username }}</h2>
+            <h2>Welcome, {{ user.student.first_name }} {{ user.student.last_name }}</h2>
             <p>Manage your room reservations and check their status below.</p>
             <div class="btn-group">
-                <a href="{% url 'book_room' %}" class="btn btn-success">+ Book a Room</a>
+                <a href="{% url 'select_campus' %}" class="btn btn-success">+ Book a Facility</a>
                 <a href="{% url 'student_reservations' %}" class="btn">View All Reservations</a>
             </div>
         </div>
-        
+
         {% if reservations %}
             {% if notifications %}
                 <div class="notification-banner">
@@ -498,7 +498,7 @@
             <div class="no-reservations">
                 <p style="font-size: 18px;">You haven't booked any rooms yet</p>
                 <p>Start by booking your first room below</p>
-                <a href="{% url 'book_room' %}" class="btn btn-success">Book a Room Now</a>
+                <a href="{% url 'select_campus' %}" class="btn btn-success">Book a Facility Now</a>
             </div>
         {% endif %}
     </div>

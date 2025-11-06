@@ -93,11 +93,9 @@
 <body>
     <div class="login-container">
         <h1>Room Reservation</h1>
-        
-        {% if error %}
-            <div class="error">{{ error }}</div>
-        {% endif %}
-        
+
+
+
         <form method="POST">
             {% csrf_token %}
             

@@ -12,8 +12,11 @@
 </head>
 <body>
     <header>
-        <h2>Official Room Reservation Letter</h2>
+        <h2>Official Room Reservation Approval Letter</h2>
         <div>{{ room.campus.name }} — {{ room.name }}</div>
+        <div style="font-size: 18px; font-weight: bold; color: #d32f2f; margin-top: 20px; padding: 10px; border: 2px solid #d32f2f; display: inline-block;">
+            APPROVAL CODE: {{ reservation.approval_code }}
+        </div>
     </header>
 
     <div class="meta">

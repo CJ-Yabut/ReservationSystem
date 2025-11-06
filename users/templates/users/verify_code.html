@@ -175,15 +175,7 @@
                 Enter the 6-digit verification code sent to your email. Code expires in 10 minutes.
             </div>
             
-            {% if messages %}
-                <div class="messages">
-                    {% for message in messages %}
-                        <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+
             
             <form method="POST">
                 {% csrf_token %}
