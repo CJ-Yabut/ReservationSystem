@@ -1,0 +1,14 @@
+Django==4.2.7
+weasyprint==66.0
+Pillow
+cssselect2
+tinycss2
+cffi
+Pyphen
+fonttools
+pydyf
+tinyhtml5
+
+# Optional but common Django dependencies
+requests
+python-dotenv
