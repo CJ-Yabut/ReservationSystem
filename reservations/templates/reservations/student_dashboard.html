@@ -18,43 +18,155 @@
         
         .navbar {
             background: #d9d9d9;
-            color: #000000;
-            padding: 15px 10px;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 3px solid #000000;
+            flex-wrap: wrap;
+            position: relative;
         }
-        
-        .navbar h1 {
+
+        .navbar-brand {
+            color: rgb(0, 0, 0);
             font-size: 24px;
-            margin-top: 2.5px;
+            font-weight: bold;
         }
-        
-        .navbar-right {
+
+        .nav-toggle-checkbox {
+            display: none;
+        }
+
+        .nav-toggle-label {
+            display: none;
+            font-size: 24px;
+            color: #000000;
+            cursor: pointer;
+        }
+
+        .navbar-menu {
             display: flex;
-            gap: 15px;
+            align-items: center;
+            gap: 30px;
+            width: auto;
+        }
+
+        .navbar-left {
+            display: flex;
             align-items: center;
         }
-        
-        .navbar a {
-            color: rgb(0, 0, 0);
-            text-decoration: none;
-            padding: 8px 15px;
-            background: #d9d9d9;
-            border-radius: 5px;
-            transition: background 0.3s;
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
         }
-        
-        .navbar a:hover {
+
+        .nav-links a {
+            color: #000000;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1; /* Ensure text is above ::before */
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
             background: #545454;
-            color:#ffffff;
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .nav-links a:hover::before {
+            left: 0;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            color: #000000;
+            font-size: 13px;
+        }
+
+        .logout-btn {
+            background: #d9d9d9;
+            color: #000000;
+            border: 1px solid #000000;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1; /* Ensure text is above ::before */
+        }
+
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: #545454;
+            transition: width 0.4s ease, height 0.4s ease, top 0.4s ease, left 0.4s ease;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+
+        .logout-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .logout-btn:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
         .container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 20px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .welcome {
@@ -62,7 +174,25 @@
             padding: 25px;
             border-radius: 10px;
             margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: slideInDown 0.6s ease;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
         
         .welcome h2 {
@@ -88,12 +218,36 @@
             text-decoration: none;
             color:#000000;
             border-radius: 5px;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1; /* Ensure text is above ::after */
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(180, 180, 180, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            z-index: -1;
+        }
+
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
         }
         
         .btn:hover {
             background: #b4b4b4;
             color:#ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
         .btn-success {
@@ -106,52 +260,20 @@
             color:rgb(255, 255, 255);
         }
         
-        .notification-banner {
-            background: #545454;
-            border-left: 4px solid #000000;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .notification-banner strong {
-            color: #ffffff;
-            display: block;
-            margin-bottom: 10px;
-        }
-        
-        .notification-banner ul {
-            margin-left: 20px;
-            color: #ffffff;
-        }
-        
-        .notification-banner li {
-            margin: 8px 0;
-            line-height: 1.5;
-        }
-        
-        .notification-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-weight: bold;
-            font-size: 11px;
-            margin-left: 5px;
-        }
-        
-        .notification-badge.approved {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .notification-badge.rejected {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
         .section {
             margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .section h3 {
@@ -159,6 +281,22 @@
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid #000000;
+            position: relative;
+        }
+
+        .section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #545454;
+            transition: width 0.3s ease;
+        }
+
+        .section:hover h3::after {
+            width: 100px;
         }
         
         .stats {
@@ -172,8 +310,50 @@
             background: #545454;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
+            border-left: 5px solid #b4b4b4;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            animation: scaleIn 0.5s ease both;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        .stat-card:nth-child(5) { animation-delay: 0.5s; }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card.approved {
+            border-left-color: #28a745;
+        }
+
+        .stat-card.rejected {
+            border-left-color: #dc3545;
+        }
+
+        .stat-card.cancelled {
+            border-left-color: #6c757d;
+        }
+
+        .stat-card.total {
+            border-left-color: #000000;
         }
         
         .stat-card h3 {
@@ -181,12 +361,19 @@
             color: #ffffff;
             margin-bottom: 8px;
             font-weight: normal;
+            border: none;
+            padding: 0;
         }
         
         .stat-card .number {
             font-size: 28px;
             font-weight: bold;
             color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .number {
+            transform: scale(1.2);
         }
         
         .reservations-grid {
@@ -198,9 +385,34 @@
         .reservation-card {
             background: #545454;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+            animation: slideInUp 0.6s ease both;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reservation-card:nth-child(1) { animation-delay: 0.1s; }
+        .reservation-card:nth-child(2) { animation-delay: 0.2s; }
+        .reservation-card:nth-child(3) { animation-delay: 0.3s; }
+        .reservation-card:nth-child(4) { animation-delay: 0.4s; }
+        .reservation-card:nth-child(5) { animation-delay: 0.5s; }
+        .reservation-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .reservation-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
         
         .reservation-card.pending {
@@ -223,12 +435,22 @@
             background: #545454;
             padding: 15px;
             border-bottom: 1px solid #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .reservation-card:hover .card-header {
+            background: #5f5f5f;
         }
         
         .card-header h4 {
             color: #ffffff;
             margin-bottom: 5px;
             font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .reservation-card:hover .card-header h4 {
+            transform: translateX(5px);
         }
         
         .card-header p {
@@ -248,6 +470,12 @@
             margin-bottom: 12px;
             padding-bottom: 12px;
             border-bottom: 1px solid #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .info-row:hover {
+            padding-left: 5px;
+            background: rgba(255, 255, 255, 0.05);
         }
         
         .info-row:last-child {
@@ -273,6 +501,11 @@
             border-radius: 20px;
             font-weight: bold;
             font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .status-badge:hover {
+            transform: scale(1.1);
         }
         
         .status-badge.pending {
@@ -303,6 +536,18 @@
             border-radius: 5px;
             font-size: 13px;
             color: #856404;
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         
         .rejection-note strong {
@@ -326,7 +571,29 @@
             text-decoration: none;
             flex: 1;
             text-align: center;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1; /* Ensure text is above ::before */
+        }
+
+        .card-footer button::before, .card-footer a::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+            z-index: -1;
+        }
+
+        .card-footer button:hover::before, .card-footer a:hover::before {
+            width: 300px;
+            height: 300px;
         }
         
         .btn-cancel-res {
@@ -336,7 +603,9 @@
         
         .btn-cancel-res:hover {
             background: #c82333;
-            color:#000000;
+            color:#ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(200, 35, 51, 0.3);
         }
         
         .btn-view {
@@ -346,28 +615,160 @@
         
         .btn-view:hover {
             background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
         
         .no-reservations {
             text-align: center;
             padding: 60px 20px;
-            background: white;
+            background: #545454;
             border-radius: 10px;
-            color: #999;
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: bounceIn 0.8s ease;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .no-reservations:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
         
         .no-reservations p {
             margin-bottom: 20px;
         }
+
+        @media (max-width: 991.98px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .nav-toggle-label {
+                display: block;
+            }
+
+            .navbar-menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                position: absolute;
+                top: 73px; /* Adjust based on your navbar height */
+                left: 0;
+                background: #d9d9d9;
+                padding: 15px;
+                z-index: 1000;
+                border-bottom: 3px solid #000000;
+                gap: 0;
+                animation: slideDown 0.3s ease;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .nav-toggle-checkbox:checked ~ .navbar-menu {
+                display: flex;
+            }
+
+            .nav-links, .navbar-right {
+                flex-direction: column;
+                width: 100%;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .nav-links a {
+                padding: 12px;
+                text-align: left;
+            }
+
+            .navbar-right {
+                margin-top: 15px;
+                padding-top: 15px;
+                border-top: 1px solid #000000;
+                gap: 15px;
+            }
+
+            .user-info {
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 15px auto;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome h2 {
+                font-size: 20px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn-group .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .reservations-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-footer {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <h1>Student Dashboard</h1>
-        <div class="navbar-right">
-            <a href="{% url 'students:profile' %}">My Profile</a>
-            <a href="{% url 'students:edit_profile' %}">Edit Profile</a>
-            <a href="{% url 'logout' %}">Logout</a>
+        <div class="navbar-left">
+            <span class="navbar-brand">Student Dashboard</span>
+        </div>
+        
+        <input type="checkbox" id="nav-toggle" class="nav-toggle-checkbox">
+        <label for="nav-toggle" class="nav-toggle-label">
+            <span>&#9776;</span>
+        </label>
+        
+        <div class="navbar-menu">
+            <ul class="nav-links">
+                <li><a href="{% url 'select_campus' %}">+ Book a Facility</a></li>
+                <li><a href="{% url 'student_reservations' %}">My Reservations</a></li>
+            </ul>
+            <div class="navbar-right">
+                <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+            </div>
         </div>
     </div>
     
@@ -376,124 +777,112 @@
         <div class="welcome">
             <h2>Welcome, {{ user.student.first_name }} {{ user.student.last_name }}</h2>
             <p>Manage your room reservations and check their status below.</p>
-            <div class="btn-group">
-                <a href="{% url 'select_campus' %}" class="btn btn-success">+ Book a Facility</a>
-                <a href="{% url 'student_reservations' %}" class="btn">View All Reservations</a>
-            </div>
         </div>
 
         {% if reservations %}
-            {% if notifications %}
-                <div class="notification-banner">
-                    <strong>Updates on Your Reservations:</strong>
-                    <ul>
-                        {% for notif in notifications %}
-                            <li>
-                                <strong>{{ notif.room.name }}</strong> on {{ notif.date|date:"M d, Y" }}
-                                {% if notif.status == 'approved' %}
-                                    <span class="notification-badge approved">Approved</span>
-                                {% elif notif.status == 'rejected' %}
-                                    <span class="notification-badge rejected">Rejected</span>
-                                {% endif %}
-                                {% if notif.rejection_note %}
-                                    <br><span style="font-size: 12px; color: #ffffff;">{{ notif.rejection_note }}</span>
-                                {% endif %}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
             
             <div class="stats">
                 <div class="stat-card">
                     <h3>Pending</h3>
                     <div class="number">{{ pending }}</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card approved">
                     <h3>Approved</h3>
                     <div class="number">{{ approved }}</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card rejected">
+                    <h3>Rejected</h3>
+                    <div class="number">{{ rejected|default:"0" }}</div>
+                </div>
+                <div class="stat-card cancelled">
+                    <h3>Cancelled</h3>
+                    <div class="number">{{ cancelled|default:"0" }}</div>
+                </div>
+                <div class="stat-card total">
                     <h3>Total</h3>
                     <div class="number">{{ reservations|length }}</div>
                 </div>
             </div>
             
             <div class="section">
-                <h3>Your Recent Reservations</h3>
-                <div class="reservations-grid">
-                    {% for reservation in reservations|slice:":6" %}
-                        <div class="reservation-card {{ reservation.status }}">
-                            <div class="card-header">
-                                <h4>{{ reservation.room.name }}</h4>
-                                <p><strong>{{ reservation.room.campus.name }}</strong></p>
-                                <p>{{ reservation.room.campus.location }}</p>
-                            </div>
-                            
-                            <div class="card-body">
-                                <div class="info-row">
-                                    <span class="info-label">Date:</span>
-                                    <span class="info-value">{{ reservation.date|date:"M d, Y" }}</span>
+                <h3>Your Upcoming Reservations</h3>
+                
+                {% if upcoming_reservations %}
+                    <div class="reservations-grid">
+                        
+                        {% for reservation in upcoming_reservations %}
+                            <div class="reservation-card {{ reservation.status }}">
+                                <div class="card-header">
+                                    <h4>{{ reservation.room.name }}</h4>
+                                    <p><strong>{{ reservation.room.campus.name }}</strong></p>
+                                    <p>{{ reservation.room.campus.location }}</p>
                                 </div>
                                 
-                                <div class="info-row">
-                                    <span class="info-label">Time:</span>
-                                    <span class="info-value">{{ reservation.start_time }} - {{ reservation.end_time }}</span>
-                                </div>
-                                
-                                <div class="info-row">
-                                    <span class="info-label">Capacity:</span>
-                                    <span class="info-value">{{ reservation.room.capacity }} people</span>
-                                </div>
-                                
-                                <div class="info-row">
-                                    <span class="info-label">Status:</span>
-                                    <span class="status-badge {{ reservation.status }}">
-                                        {% if reservation.status == 'pending' %}
-                                            Pending
-                                        {% elif reservation.status == 'approved' %}
-                                            Approved
-                                        {% elif reservation.status == 'rejected' %}
-                                            Rejected
-                                        {% else %}
-                                            Cancelled
-                                        {% endif %}
-                                    </span>
+                                <div class="card-body">
+                                    <div class="info-row">
+                                        <span class="info-label">Date:</span>
+                                        <span class="info-value">{{ reservation.date|date:"M d, Y" }}</span>
+                                    </div>
+                                    
+                                    <div class="info-row">
+                                        <span class="info-label">Time:</span>
+                                        <span class="info-value">{{ reservation.start_time }} - {{ reservation.end_time }}</span>
+                                    </div>
+                                    
+                                    <div class="info-row">
+                                        <span class="info-label">Capacity:</span>
+                                        <span class="info-value">{{ reservation.room.capacity }} people</span>
+                                    </div>
+                                    
+                                    <div class="info-row">
+                                        <span class="info-label">Status:</span>
+                                        <span class="status-badge {{ reservation.status }}">
+                                            {% if reservation.status == 'pending' %}
+                                                Pending
+                                            {% elif reservation.status == 'approved' %}
+                                                Approved
+                                            {% elif reservation.status == 'rejected' %}
+                                                Rejected
+                                            {% else %}
+                                                Cancelled
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    
+                                    {% if reservation.status == 'pending' %}
+                                        <div class="info-row">
+                                            <span class="info-label">Note:</span>
+                                            <span class="info-value">Waiting for approval</span>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if reservation.rejection_note %}
+                                        <div class="rejection-note">
+                                            <strong>Rejection Reason:</strong><br>
+                                            {{ reservation.rejection_note }}
+                                        </div>
+                                    {% endif %}
                                 </div>
                                 
                                 {% if reservation.status == 'pending' %}
-                                    <div class="info-row">
-                                        <span class="info-label">Status:</span>
-                                        <span class="info-value">Waiting for approval</span>
-                                    </div>
-                                {% endif %}
-                                
-                                {% if reservation.rejection_note %}
-                                    <div class="rejection-note">
-                                        <strong>Rejection Reason:</strong><br>
-                                        {{ reservation.rejection_note }}
+                                    <div class="card-footer">
+                                        <form method="POST" action="{% url 'cancel_reservation' reservation.id %}" style="display: contents;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn-cancel-res" onclick="return confirm('Are you sure you want to cancel this reservation?')">Cancel Booking</button>
+                                        </form>
                                     </div>
                                 {% endif %}
                             </div>
-                            
-                            {% if reservation.status == 'pending' %}
-                                <div class="card-footer">
-                                    <form method="POST" action="{% url 'cancel_reservation' reservation.id %}" style="display: contents;">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn-cancel-res" onclick="return confirm('Are you sure you want to cancel this reservation?')">Cancel Booking</button>
-                                    </form>
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-                
-                {% if reservations|length > 6 %}
-                    <div style="text-align: center; margin-top: 20px;">
-                        <a href="{% url 'student_reservations' %}" class="btn">View All Reservations ({{ reservations|length }})</a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-reservations" style="padding: 30px; background: #545454;">
+                        <p style="font-size: 16px; margin-bottom: 0;">You have no upcoming reservations in the next 7 days.</p>
                     </div>
                 {% endif %}
             </div>
+
+            
         {% else %}
             <div class="no-reservations">
                 <p style="font-size: 18px;">You haven't booked any rooms yet</p>

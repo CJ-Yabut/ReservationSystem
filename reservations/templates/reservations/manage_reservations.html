@@ -1,9 +1,14 @@
+{% load static %}
+{% load humanize %} 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Reservations</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         * {
             margin: 0;
@@ -17,39 +22,153 @@
             color: #ffffff;
         }
         
+        /* --- START: FIXED NAVBAR (Dark Theme + Student Effects) --- */
         .navbar {
             background: #545454;
-            color: #ffffff;
-            padding: 15px 20px;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 3px solid #ffffff;
+            flex-wrap: nowrap; /* Prevents wrapping */
+            position: relative;
         }
-        
-        .navbar h1 {
+
+        .navbar-brand {
+            color: rgb(255, 255, 255);
+            font-size: 22px;
+            font-weight: bold;
+            flex-shrink: 0; /* Prevents shrinking */
+        }
+
+        .nav-toggle-checkbox {
+            display: none;
+        }
+
+        .nav-toggle-label {
+            display: none;
             font-size: 24px;
+            color: #ffffff;
+            cursor: pointer;
         }
-        
-        .navbar a {
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            width: auto;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
             color: #ffffff;
             text-decoration: none;
-            padding: 8px 15px;
-            background: #545454;
+            font-size: 14px;
+            padding: 8px 12px;
             border-radius: 5px;
-            margin-left: 10px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            white-space: nowrap; /* Prevents links from wrapping text */
         }
-        
-        .navbar a:hover {
-            color:#545454;
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
             background: #ffffff;
+            transition: left 0.3s ease;
+            z-index: -1;
         }
+
+        .nav-links a:hover::before {
+            left: 0;
+        }
+
+        .nav-links a:hover {
+            color: #545454;
+            transform: translateY(-2px);
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            color: #ffffff;
+            font-size: 13px;
+            white-space: nowrap; /* Prevents username from wrapping */
+        }
+
+        .logout-btn {
+            background: #545454;
+            color: #ffffff;
+            border: 1px solid #ffffff;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            flex-shrink: 0; /* Prevents button from shrinking */
+        }
+
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: #ffffff;
+            opacity: 0.3;
+            transition: width 0.4s ease, height 0.4s ease, top 0.4s ease, left 0.4s ease;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+
+        .logout-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .logout-btn:hover {
+            background: #ffffff;
+            color: #545454;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        /* --- END: NAVBAR --- */
         
         .container {
             max-width: 1400px;
             margin: 30px auto;
-            padding: 20px;
+            padding: 0 20px; /* Changed from padding: 20px */
         }
         
         .messages {
@@ -120,8 +239,14 @@
             flex-wrap: wrap;
             align-items: center;
         }
+
+        /* Added label color for visibility on white bg */
+        .filters label {
+            color: #333; 
+            font-weight: bold;
+        }
         
-        .filters select, .filters button {
+        .filters select, .filters button, .filters a {
             padding: 10px 15px;
             border: 1px solid #ffffff;
             border-radius: 5px;
@@ -130,34 +255,34 @@
             color: #ffffff;
             cursor: pointer;
             transition: all 0.3s;
-    
-
         }
         
         .filters button {
-            background: #545454;
-            color: #ffffff;
             border: none;
-            cursor: pointer;
+        }
+
+        /* Added a style for the 'Clear Filter' link */
+        .filters a {
+            background: #999;
+            text-decoration: none;
         }
         
-        .filters button:hover {
+        .filters button:hover, .filters a:hover {
             background: #b4b4b4;
             color: #545454;
-            
-
         }
         
         .table-container {
             background: #6b6b6b;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+            overflow-x: auto; /* Added for responsiveness */
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 900px; /* Prevents table cramping */
         }
         
         th {
@@ -205,6 +330,15 @@
             background: #e2e3e5;
             color: #383d41;
         }
+
+        /* Style for the 'View Letter' link */
+        td a {
+            color: #d9d9d9;
+            text-decoration: underline;
+        }
+        td a:hover {
+            color: #ffffff;
+        }
         
         .actions {
             display: flex;
@@ -218,6 +352,7 @@
             border-radius: 3px;
             border: none;
             cursor: pointer;
+            white-space: nowrap; /* Prevents buttons wrapping */
         }
         
         .approve-btn {
@@ -262,16 +397,120 @@
             color: #cccccc;
             font-size: 12px;
         }
+
+        /* === START: FIXED Responsive Styles === */
+
+        /* This breakpoint (1200px) shows the hamburger menu sooner */
+        @media (max-width: 1199.98px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .nav-toggle-label {
+                display: block; 
+                color: #ffffff;
+            }
+
+            .navbar-menu {
+                display: none; 
+                flex-direction: column;
+                width: 100%;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                background: #545454;
+                padding: 15px;
+                z-index: 1000;
+                border-bottom: 3px solid #ffffff;
+                gap: 0;
+                animation: slideDown 0.3s ease;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .nav-toggle-checkbox:checked ~ .navbar-menu {
+                display: flex;
+            }
+
+            .navbar-left, .nav-links, .navbar-right {
+                flex-direction: column;
+                width: 100%;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .nav-links a {
+                padding: 12px;
+                text-align: left;
+            }
+            
+            .navbar-right {
+                margin-top: 15px;
+                padding-top: 15px;
+                border-top: 1px solid #ffffff;
+                gap: 15px;
+            }
+
+            .user-info {
+                text-align: left;
+            }
+        }
+
+        /* Small Devices (Landscape Phones, <768px) */
+        @media (max-width: 767.98px) {
+            .container {
+                padding: 0 10px;
+                margin: 20px auto;
+            }
+        }
+        
+        /* Extra Small Devices (Portrait Phones, <576px) */
+        @media (max-width: 575.98px) {
+            .navbar {
+                padding: 10px 15px;
+            }
+            
+            .navbar-menu {
+                top: 60px; /* Adjust for smaller navbar */
+            }
+        }
+        /* --- END: FIXED Responsive Styles --- */
     </style>
 </head>
 <body>
+    
     <div class="navbar">
-        <h1>Manage Reservations</h1>
-        <div>
-            <a href="{% url 'admin_dashboard' %}">← Dashboard</a>
+        <div class="navbar-brand">RESERVATION SYSTEM</div>
+        <input type="checkbox" id="nav-toggle" class="nav-toggle-checkbox">
+        
+        <label for="nav-toggle" class="nav-toggle-label">
+            <span>&#9776;</span>
+        </label>
+        <div class="navbar-menu">
+            <div class="navbar-left">
+                <ul class="nav-links">
+                    <li><a href="{% url 'admin_dashboard' %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="{% url 'approval_codes' %}"><i class="fas fa-key"></i> Approval Codes</a></li>
+                    {% if user_profile.role == 'superadmin' %}
+                        <li><a href="/admin/panel/"><i class="fas fa-cogs"></i> Django Panel</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="navbar-right">
+                <div class="user-info">{{ user.username }} ({{ user_profile.get_role_display }})</div>
+                <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+            </div>
         </div>
     </div>
-    
     <div class="container">
 
         
@@ -308,7 +547,7 @@
                 </select>
                 <button type="submit">Filter</button>
                 {% if status_filter %}
-                    <a href="{% url 'manage_reservations' %}" style="padding: 10px 15px; background: #999; color: white; text-decoration: none; border-radius: 5px;">Clear Filter</a>
+                    <a href="{% url 'manage_reservations' %}">Clear Filter</a>
                 {% endif %}
             </form>
         </div>
@@ -324,7 +563,7 @@
                             <th>Date</th>
                             <th>Time</th>
                             <th>Status</th>
-                            <th>Letter</th> <!-- ✅ New column -->
+                            <th>Letter</th>
                             {% if user_profile.role == 'admin' %}
                                 <th>Actions</th>
                             {% else %}
@@ -346,7 +585,6 @@
                                     </span>
                                 </td>
 
-                                <!-- ✅ New column: View Letter link -->
                                 <td>
                                     {% if reservation.letter_file %}
                                         <a href="{{ reservation.letter_file.url }}" target="_blank">View Letter</a>

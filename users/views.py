@@ -192,11 +192,7 @@ def admin_login(request):
             except UserProfile.DoesNotExist:
                 messages.error(request, 'This user account is not properly configured. Contact administrator.')
         else:
-            # Check if username exists but password is wrong
-            if User.objects.filter(username=username).exists():
-                messages.error(request, 'Invalid password. Please try again.')
-            else:
-                messages.error(request, 'No admin account found with this username.')
+            messages.error(request, 'Invalid credentials.')
     
     return render(request, 'users/admin_login.html')
 
@@ -213,20 +209,22 @@ def logout_view(request):
 @login_required(login_url='student_login')
 def student_dashboard(request):
     reservations = request.user.reservations.all()
-    
+
     # Calculate stats
     pending = reservations.filter(status='pending').count()
     approved = reservations.filter(status='approved').count()
     rejected = reservations.filter(status='rejected').count()
-    
+    cancelled = reservations.filter(status='cancelled').count()
+
     # Get notifications (rejected or newly approved)
     notifications = reservations.filter(status__in=['rejected', 'approved']).order_by('-updated_at')[:3]
-    
+
     context = {
         'reservations': reservations,
         'pending': pending,
         'approved': approved,
         'rejected': rejected,
+        'cancelled': cancelled,
         'notifications': notifications,
     }
     return render(request, 'reservations/student_dashboard.html', context)
