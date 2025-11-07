@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -305,14 +306,14 @@
             gap: 15px;
             margin-bottom: 30px;
         }
-        
+
         .stat-card {
             background: #545454;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
-            border-left: 5px solid #b4b4b4;
+            border-left: 5px solid #ffc107;
             transition: all 0.3s ease;
             cursor: pointer;
             animation: scaleIn 0.5s ease both;
@@ -349,13 +350,13 @@
         }
 
         .stat-card.cancelled {
-            border-left-color: #6c757d;
+            border-left-color: #fd7e14;
         }
 
         .stat-card.total {
-            border-left-color: #000000;
+            border-left-color: #007bff;
         }
-        
+
         .stat-card h3 {
             font-size: 13px;
             color: #ffffff;
@@ -364,7 +365,7 @@
             border: none;
             padding: 0;
         }
-        
+
         .stat-card .number {
             font-size: 28px;
             font-weight: bold;
@@ -374,6 +375,12 @@
 
         .stat-card:hover .number {
             transform: scale(1.2);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #ffffff;
         }
         
         .reservations-grid {
@@ -783,22 +790,27 @@
             
             <div class="stats">
                 <div class="stat-card">
+                    <i class="fas fa-clock stat-icon"></i>
                     <h3>Pending</h3>
                     <div class="number">{{ pending }}</div>
                 </div>
                 <div class="stat-card approved">
+                    <i class="fas fa-check-circle stat-icon"></i>
                     <h3>Approved</h3>
                     <div class="number">{{ approved }}</div>
                 </div>
                 <div class="stat-card rejected">
+                    <i class="fas fa-times-circle stat-icon"></i>
                     <h3>Rejected</h3>
                     <div class="number">{{ rejected|default:"0" }}</div>
                 </div>
                 <div class="stat-card cancelled">
+                    <i class="fas fa-ban stat-icon"></i>
                     <h3>Cancelled</h3>
                     <div class="number">{{ cancelled|default:"0" }}</div>
                 </div>
                 <div class="stat-card total">
+                    <i class="fas fa-list stat-icon"></i>
                     <h3>Total</h3>
                     <div class="number">{{ reservations|length }}</div>
                 </div>
