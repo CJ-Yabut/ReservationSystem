@@ -21,16 +21,21 @@ def student_login(request):
             return redirect('student_dashboard')
         elif profile.role in ['admin', 'superadmin']:
             return redirect('admin_dashboard')
-    
+
+    # Check for password reset success message
+    if request.session.get('password_reset_success'):
+        messages.success(request, 'Password reset successful! Please log in with your new password.')
+        del request.session['password_reset_success']
+
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-        
+
         try:
             # Get user by email
             user_obj = User.objects.get(email=email)
             user = authenticate(request, username=user_obj.username, password=password)
-            
+
             if user is not None:
                 profile = user.profile
                 if not profile.email_verified:
@@ -46,7 +51,7 @@ def student_login(request):
                 messages.error(request, 'Invalid password. Please try again.')
         except User.DoesNotExist:
             messages.error(request, 'No account found with this email. Please register.')
-    
+
     return render(request, 'users/student_login.html')
 
 def student_register(request):
@@ -349,8 +354,8 @@ def reset_password(request):
             del request.session['reset_code']
         if 'reset_user_id' in request.session:
             del request.session['reset_user_id']
-        
-        messages.success(request, 'Password reset successful! Please log in with your new password.')
+
+        request.session['password_reset_success'] = True
         return redirect('student_login')
     
     context = {'email': user.email}
