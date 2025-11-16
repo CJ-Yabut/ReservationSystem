@@ -224,6 +224,16 @@ def student_dashboard(request):
     # Get notifications (rejected or newly approved)
     notifications = reservations.filter(status__in=['rejected', 'approved']).order_by('-updated_at')[:3]
 
+    # Get upcoming reservations within 7 days (approved or pending)
+    from datetime import date, timedelta
+    today = date.today()
+    seven_days_later = today + timedelta(days=7)
+    upcoming_reservations = reservations.filter(
+        date__gte=today,
+        date__lte=seven_days_later,
+        status__in=['approved', 'pending']
+    ).order_by('date', 'start_time')
+
     context = {
         'reservations': reservations,
         'pending': pending,
@@ -231,6 +241,7 @@ def student_dashboard(request):
         'rejected': rejected,
         'cancelled': cancelled,
         'notifications': notifications,
+        'upcoming_reservations': upcoming_reservations,
     }
     return render(request, 'reservations/student_dashboard.html', context)
 
